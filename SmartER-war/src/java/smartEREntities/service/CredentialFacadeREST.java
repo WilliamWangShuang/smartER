@@ -17,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import smartER.DAL.Constant;
 import smartEREntities.Credential;
 import smartER.DAL.MD5Tools;
 import smartEREntities.Resident;
@@ -101,7 +102,7 @@ public class CredentialFacadeREST extends AbstractFacade<Credential> {
         List<Credential> result = new ArrayList<Credential>();
         try{
             Query query = em.createNamedQuery(Credential.GET_BY_REGISTRATION_DATE);
-            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(rgDate);
+            Date paramDate=new SimpleDateFormat(Constant.DATE_FORMAT).parse(rgDate);
             query.setParameter("registrationdate", paramDate);
             result.addAll(query.getResultList());
         } catch (Exception ex) {

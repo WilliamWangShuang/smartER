@@ -16,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import smartER.DAL.Constant;
 import smartEREntities.Resident;
 
 /**
@@ -108,7 +109,7 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
         List<Resident> result = new ArrayList<Resident>();
         try{
             Query query = em.createNamedQuery(Resident.GET_BY_DOB);
-            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(dob);
+            Date paramDate=new SimpleDateFormat(Constant.DATE_FORMAT).parse(dob);
             query.setParameter("dob", paramDate);
             result.addAll(query.getResultList());
         } catch (Exception ex) {
