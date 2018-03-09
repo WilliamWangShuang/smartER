@@ -1,14 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package smartEREntities.service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import smartEREntities.Credential;
+import smartER.DAL.MD5Tools;
+import smartEREntities.Resident;
 
 /**
  *
@@ -83,6 +84,44 @@ public class CredentialFacadeREST extends AbstractFacade<Credential> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByPassword/{pwd}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Credential> findByPassword(@PathParam("pwd") String pwd){          
+        Query query = em.createNamedQuery(Credential.GET_BY_PASSWORD);
+        query.setParameter("passwordhash", MD5Tools.encrypt(pwd));
+        List<Credential> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByRegistrateDT/{rgDate}") 
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Credential> findByRegistrateDT(@PathParam("rgDate") String rgDate) throws Exception{ 
+        List<Credential> result = new ArrayList<Credential>();
+        try{
+            Query query = em.createNamedQuery(Credential.GET_BY_REGISTRATION_DATE);
+            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(rgDate);
+            query.setParameter("registrationdate", paramDate);
+            result.addAll(query.getResultList());
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return result;
+    }
+    
+    @GET
+    @Path("findByResId/{resid}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Credential> findByResId(@PathParam("resid") Integer resid){ 
+        Resident resident = new Resident();
+        resident = em.find(resident.getClass(), resid);
+        Query query = em.createNamedQuery(Credential.GET_BY_RESID);
+        query.setParameter("resId", resident);
+        List<Credential> result = query.getResultList();
+        return result;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

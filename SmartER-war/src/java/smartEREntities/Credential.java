@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package smartEREntities;
 
 import java.io.Serializable;
@@ -33,10 +28,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Credential.findAll", query = "SELECT c FROM Credential c")
     , @NamedQuery(name = "Credential.findByUsername", query = "SELECT c FROM Credential c WHERE c.username = :username")
     , @NamedQuery(name = "Credential.findByPasswordhash", query = "SELECT c FROM Credential c WHERE c.passwordhash = :passwordhash")
-    , @NamedQuery(name = "Credential.findByRegistrationdate", query = "SELECT c FROM Credential c WHERE c.registrationdate = :registrationdate")})
+    , @NamedQuery(name = "Credential.findByRegistrationdate", query = "SELECT c FROM Credential c WHERE c.registrationdate = :registrationdate")
+    , @NamedQuery(name = "Credential.findByResId", query = "SELECT c FROM Credential c WHERE c.resid = :resId")})
 public class Credential implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    // Constant values to define names of queries
+    public final static String GET_BY_PASSWORD = "Credential.findByPasswordhash";
+    public final static String GET_BY_REGISTRATION_DATE = "Credential.findByRegistrationdate";
+    public final static String GET_BY_RESID ="Credential.findByResId";
+    
     @Id
     @Basic(optional = false)
     @NotNull
