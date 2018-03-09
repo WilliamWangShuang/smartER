@@ -177,6 +177,29 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
         return result;
     }
     
+    @GET
+    @Path("findByFullName/{firstname}/{surename}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByFullName(@PathParam("firstname") String firstname, @PathParam("surename") String surename){
+        List<Resident> result = new ArrayList<>();
+        Predicate conditionFName = null;
+        Predicate conditionSName = null;
+        Predicate condition = null;
+        
+        CriteriaBuilder qb = em.getCriteriaBuilder();    // Create query builder
+        CriteriaQuery<Resident> c = qb.createQuery(Resident.class);   // Create query
+        Root<Resident> t = c.from(Resident.class);    // Add <Query> node in query
+        conditionFName = qb.equal(t.<String>get("firstname"), firstname); 
+        conditionSName = qb.equal(t.<String>get("surename"), surename);
+        condition = qb.and(conditionFName, conditionSName);
+        
+        c.where(condition);     // Create WHERE clause
+        TypedQuery<Resident> q = em.createQuery(c);   // Add WHERE clause into query
+        result = q.getResultList();   // Execute query
+        
+        return result;
+    }
+        
     @Override
     protected EntityManager getEntityManager() {
         return em;

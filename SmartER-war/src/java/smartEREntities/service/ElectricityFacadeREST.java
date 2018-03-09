@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -158,6 +159,48 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         resident = em.find(resident.getClass(), resid);
         Query query = em.createNamedQuery(Electricity.GET_BY_RESID);
         query.setParameter("resId", resident);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    
+    @GET     
+    @Path("findByResidentFullName/{firstname}/{surename}")     
+    @Produces({MediaType.APPLICATION_JSON})     
+    public List<Electricity> findByCourseName(@PathParam("firstname") String firstname, @PathParam("surename") String surename) {
+        TypedQuery<Electricity> q = em.createQuery("SELECT e FROM Electricity e WHERE e.resid.firstname = :firstname AND e.resid.surename = :surename", Electricity.class);         
+        q.setParameter("firstname", firstname);
+        q.setParameter("surename", surename);
+        return q.getResultList();     
+    }
+    
+    @GET     
+    @Path("findByResIdDateHour/{resid}/{usagedate}/{usagehour}")     
+    @Produces({MediaType.APPLICATION_JSON})     
+    public List<Electricity> findByResIdDateHour(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate, @PathParam("usagehour") Integer usagehour) throws Exception{
+        List<Electricity> result = new ArrayList<Electricity>();
+        Resident resident = new Resident();
+        try {
+            resident = em.find(resident.getClass(), resid);
+            Query query = em.createNamedQuery(Electricity.GET_BY_RESID_DATE_HOUR);
+            query.setParameter("resId", resident);
+            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(usagedate);
+            query.setParameter("usagedate", paramDate);
+            query.setParameter("usagehour", usagehour);
+            result = query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return result;     
+    }
+    
+    @GET
+    @Path("findByEmailProvider/{email}/{provider}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Electricity> findByEmailProvider(@PathParam("email") String email, @PathParam("provider") String provider ){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_EMAIL_PROVIDER);
+        query.setParameter("email", email);
+        query.setParameter("provider", provider);
         List<Electricity> result = query.getResultList();
         return result;
     }
