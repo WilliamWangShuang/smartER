@@ -43,6 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Resident implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    // Constant variables to define names of queries
+    public static final String GET_BY_FIRST_NAME = "Resident.findByFirstname";
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

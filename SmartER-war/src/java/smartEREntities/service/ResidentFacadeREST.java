@@ -2,8 +2,8 @@ package smartEREntities.service;
 
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
+import javax.persistence.criteria.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -78,6 +78,15 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByFirstName/{first_name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Resident getResidentByFirstName(@PathParam("first_name") String firstName){  
+        Query query = em.createNamedQuery(Resident.GET_BY_FIRST_NAME);
+        query.setParameter("firstname", firstName);
+        return (Resident)query.getResultList().get(0);
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
