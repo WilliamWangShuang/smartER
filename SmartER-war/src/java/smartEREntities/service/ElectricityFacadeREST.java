@@ -243,6 +243,33 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         return result;
     }
     
+    @GET
+    @Path("findSumUsage/{resid}/{usagedate}/{usagehour}")
+    @Produces ({MediaType.TEXT_PLAIN})
+    public String findSumUsage(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate, @PathParam("usagehour") Integer usagehour) throws Exception{
+        String result = "";
+        try {
+            // Find the record in DB for the hour, for the date and for the resident
+            List<Electricity> foundRecords = findByResIdDateHour(resid, usagedate, usagehour);
+            
+            // Sum the usage of the three appliance if the record can be found in DB
+            if (foundRecords.size() > 0) {
+                Electricity el = foundRecords.get(0);
+                result = Double.toString(el.getFridgeusage().doubleValue() +
+                          el.getWmusage().doubleValue() +
+                          el.getAcusage().doubleValue());
+            } else {
+                result = "";
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+        
+        return result;
+    }
+    
+    
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
