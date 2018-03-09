@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -21,8 +20,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import smartER.DAL.Constant;
-import smartEREntities.Credential;
+import smartER.DAL.SmartERTools;
 import smartEREntities.Electricity;
+import smartEREntities.HourlyUsageInfo;
 import smartEREntities.Resident;
 
 /**
@@ -255,9 +255,9 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             // Sum the usage of the three appliance if the record can be found in DB
             if (foundRecords.size() > 0) {
                 Electricity el = foundRecords.get(0);
-                result = Double.toString(el.getFridgeusage().doubleValue() +
-                          el.getWmusage().doubleValue() +
-                          el.getAcusage().doubleValue());
+                result = Double.toString(SmartERTools.getTotalUsage(el.getFridgeusage().doubleValue(), 
+                                                                    el.getWmusage().doubleValue(), 
+                                                                    el.getAcusage().doubleValue()));
             } else {
                 result = "";
             }
@@ -268,7 +268,49 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         return result;
     }
     
+    @GET
+    @Path("findByDateHour/{usagedate}/{usagehour}")
+    @Produces ({MediaType.APPLICATION_JSON})
+    public List<Electricity> findByDateHour(@PathParam("usagedate") String usagedate, @PathParam("usagehour") Integer usagehour) throws Exception {
+        List<Electricity> results = new ArrayList<Electricity>();
+        try {
+            Query query = em.createNamedQuery(Electricity.GET_BY_DATE_HOUR);
+            Date paramDate = new SimpleDateFormat(Constant.DATE_FORMAT).parse(usagedate);
+            query.setParameter("usagedate", paramDate);
+            query.setParameter("usagehour", usagehour);
+            results = query.getResultList();
+        } catch(Exception ex) {
+            throw ex;
+        }
+        
+        return results;
+    }
     
+    @GET
+    @Path("findTotalUsageOfAllResidentByDateAndHour/{usagedate}/{usagehour}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public List<HourlyUsageInfo> findTotalUsageOfAllResidentByDateAndHour(@PathParam("usagedate") String usagedate, @PathParam("usagehour") Integer usagehour) throws Exception {
+        List<HourlyUsageInfo> results = new ArrayList<HourlyUsageInfo>();
+        try {
+            // Find all usage data by date and hour
+            List<Electricity> usageList = findByDateHour(usagedate, usagehour);
+            // Inital result list data 
+            for (Electricity el : usageList) {
+                // Calculate total usage for this resident at this hour on this particular day
+                double totalUsage = SmartERTools.getTotalUsage(el.getFridgeusage().doubleValue(), 
+                                                               el.getAcusage().doubleValue(),
+                                                               el.getWmusage().doubleValue());
+                int resid = el.getResid().getResid();
+                String address = el.getResid().getAddress();
+                Short postcode = el.getResid().getPostcode();
+                // Add this record into result list
+                results.add(new HourlyUsageInfo(resid, address, postcode, totalUsage));
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return results;
+    }
     
     @Override
     protected EntityManager getEntityManager() {
