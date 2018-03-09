@@ -45,6 +45,14 @@ public class Resident implements Serializable {
     private static final long serialVersionUID = 1L;
     // Constant variables to define names of queries
     public static final String GET_BY_FIRST_NAME = "Resident.findByFirstname";
+    public static final String GET_BY_SURE_NAME = "Resident.findBySurename";
+    public static final String GET_BY_DOB = "Resident.findByDob";
+    public static final String GET_BY_ADDRESS = "Resident.findByAddress";
+    public static final String GET_BY_POSTCODE = "Resident.findByPostcode";   
+    public static final String GET_BY_EMAIL = "Resident.findByEmail";
+    public static final String GET_BY_MOBILE = "Resident.findByMobile";
+    public static final String GET_BY_NUMBER_OF_RESIDENT = "Resident.findByNumberofresident";
+    public static final String GET_BY_PROVIDER = "Resident.findByEnergyprovider";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

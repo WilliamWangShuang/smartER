@@ -1,5 +1,8 @@
 package smartEREntities.service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.*;
@@ -81,10 +84,97 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
     @GET
     @Path("findByFirstName/{first_name}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Resident getResidentByFirstName(@PathParam("first_name") String firstName){  
+    public List<Resident> findByFirstName(@PathParam("first_name") String firstName){          
         Query query = em.createNamedQuery(Resident.GET_BY_FIRST_NAME);
         query.setParameter("firstname", firstName);
-        return (Resident)query.getResultList().get(0);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findBySureName/{sure_name}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findBySureName(@PathParam("sure_name") String sureName){ 
+        Query query = em.createNamedQuery(Resident.GET_BY_SURE_NAME);
+        query.setParameter("surename", sureName);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByDOB/{birthday}") 
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByDOB(@PathParam("birthday") String dob) throws Exception{ 
+        List<Resident> result = new ArrayList<Resident>();
+        try{
+            Query query = em.createNamedQuery(Resident.GET_BY_DOB);
+            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(dob);
+            query.setParameter("dob", paramDate);
+            result.addAll(query.getResultList());
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return result;
+    }
+    
+    @GET
+    @Path("findByAddress/{address}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Resident findByAddress(@PathParam("address") String address){ 
+        Query query = em.createNamedQuery(Resident.GET_BY_ADDRESS);
+        query.setParameter("address", address);
+        Resident result = query.getResultList().size() > 0 ? (Resident)query.getResultList().get(0) : null;
+        return result;
+    }
+    
+    @GET
+    @Path("findByPostcode/{postcode}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByPostcode(@PathParam("postcode") Integer postcode){          
+        Query query = em.createNamedQuery(Resident.GET_BY_POSTCODE);
+        query.setParameter("postcode", postcode);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByEmail/{email}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByEmail(@PathParam("email") String email){          
+        Query query = em.createNamedQuery(Resident.GET_BY_EMAIL);
+        query.setParameter("email", email);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByMobile/{mobile}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByMobile(@PathParam("mobile") String mobile){          
+        Query query = em.createNamedQuery(Resident.GET_BY_MOBILE);
+        query.setParameter("mobile", mobile);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByNoOfResident/{number}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByNoOfResident(@PathParam("number") Integer number){          
+        Query query = em.createNamedQuery(Resident.GET_BY_NUMBER_OF_RESIDENT);
+        query.setParameter("numberofresident", number);
+        List<Resident> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByEnergyProvider/{provider}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Resident> findByEnergyProvider(@PathParam("provider") String provider){          
+        Query query = em.createNamedQuery(Resident.GET_BY_PROVIDER);
+        query.setParameter("energyprovider", provider);
+        List<Resident> result = query.getResultList();
+        return result;
     }
     
     @Override
