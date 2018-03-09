@@ -34,10 +34,20 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Electricity.findByFridgeusage", query = "SELECT e FROM Electricity e WHERE e.fridgeusage = :fridgeusage")
     , @NamedQuery(name = "Electricity.findByAcusage", query = "SELECT e FROM Electricity e WHERE e.acusage = :acusage")
     , @NamedQuery(name = "Electricity.findByWmusage", query = "SELECT e FROM Electricity e WHERE e.wmusage = :wmusage")
-    , @NamedQuery(name = "Electricity.findByTemperature", query = "SELECT e FROM Electricity e WHERE e.temperature = :temperature")})
+    , @NamedQuery(name = "Electricity.findByTemperature", query = "SELECT e FROM Electricity e WHERE e.temperature = :temperature")
+    , @NamedQuery(name = "Electricity.findByResId", query = "SELECT e FROM Electricity e WHERE e.resid = :resId")})
 public class Electricity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    // Constant variables to define names of queries
+    public final static String GET_BY_USAGE_DATE = "Electricity.findByUsagedate";
+    public final static String GET_BY_USAGE_HOUR = "Electricity.findByUsagehour";
+    public final static String GET_BY_FRIDGE_USAGE = "Electricity.findByFridgeusage";
+    public final static String GET_BY_AC_USAGE = "Electricity.findByAcusage";
+    public final static String GET_BY_WM_USAGE = "Electricity.findByWmusage";
+    public final static String GET_BY_TEMPERATURE = "Electricity.findByTemperature";
+    public final static String GET_BY_RESID ="Electricity.findByResId";
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

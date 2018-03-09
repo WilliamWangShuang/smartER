@@ -1,9 +1,13 @@
 package smartEREntities.service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,7 +17,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import smartEREntities.Credential;
 import smartEREntities.Electricity;
+import smartEREntities.Resident;
 
 /**
  *
@@ -78,6 +84,84 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("findByUsageDT/{usageDT}") 
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByUsageDT(@PathParam("usageDT") String usageDT) throws Exception{ 
+        List<Electricity> result = new ArrayList<Electricity>();
+        try{
+            Query query = em.createNamedQuery(Electricity.GET_BY_USAGE_DATE);
+            Date paramDate=new SimpleDateFormat("yyyy-MM-dd").parse(usageDT);
+            query.setParameter("usagedate", paramDate);
+            result.addAll(query.getResultList());
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return result;
+    }
+    
+    @GET
+    @Path("findByUsageHour/{hour}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByUsageHour(@PathParam("hour") Integer hour){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_USAGE_HOUR);
+        query.setParameter("usagehour", hour);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByFridgeUsage/{fusage}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByFridgeUsage(@PathParam("fusage") double fusage){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_FRIDGE_USAGE);
+        query.setParameter("fridgeusage", fusage);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByACUsage/{acusage}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByACUsage(@PathParam("acusage") double acusage){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_AC_USAGE);
+        query.setParameter("acusage", acusage);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByWMUsage/{wmusage}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByWMUsage(@PathParam("wmusage") double wmusage){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_WM_USAGE);
+        query.setParameter("wmusage", wmusage);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByTemperature/{temperature}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByTemperature(@PathParam("temperature") Integer temperature){          
+        Query query = em.createNamedQuery(Electricity.GET_BY_TEMPERATURE);
+        query.setParameter("temperature", temperature);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
+    @GET
+    @Path("findByResId/{resid}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Electricity> findByResId(@PathParam("resid") Integer resid){ 
+        Resident resident = new Resident();
+        resident = em.find(resident.getClass(), resid);
+        Query query = em.createNamedQuery(Electricity.GET_BY_RESID);
+        query.setParameter("resId", resident);
+        List<Electricity> result = query.getResultList();
+        return result;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
