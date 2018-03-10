@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -19,7 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.*;
 import smartER.DAL.Constant;
 import smartER.DAL.SmartERTools;
 import smartEREntities.Electricity;
@@ -343,15 +347,8 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
     public TotalUsageForEachAppIn24H findTotalUsageForEachAppIn24H(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate) throws Exception {
         TotalUsageForEachAppIn24H result = null;
         try {
-            // Convert param usagedate to Date Type
-            Date paramDate = new SimpleDateFormat(Constant.DATE_FORMAT).parse(usagedate);
-            // Create query to find all usage data on the specific date for this resident
-            Query query = em.createNamedQuery(Electricity.GET_BY_RESID_DATE);
-            // Set parameters for query
-            query.setParameter("resId", resid);
-            query.setParameter("usagedate", paramDate);
-            // Execute query
-            List<Electricity> usageList = query.getResultList();
+            // Get usage list by resid and date
+            List<Electricity> usageList = SmartERTools.getUsageByResidAndDate(resid, usagedate, em);
             
             // Calculate total usage for all appliances 
             double fridgeUsage = SmartERTools.getFridgeTotalUsage(usageList);
@@ -365,6 +362,52 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         }
         
         return result;
+    }
+    
+    @GET
+    @Path("findDailyOrHourlyUsage/{resid}/{usagedate}/{viewType}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Object findDailyOrHourlyUsage(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate, @PathParam("viewType") String viewType) throws Exception {
+        // Create JSON builder
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        
+        try {
+            // Get usage list by resid and date
+            List<Electricity> usageList = SmartERTools.getUsageByResidAndDate(resid, usagedate, em);
+            
+            if (Constant.VIEW_HOURLY.equals(viewType)) {
+                for (Electricity el :usageList) {
+                    // Create JSON object
+                    JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+                    jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(el.getResid().getResid()));
+                    jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(el.getTotalUsage()));
+                    jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Integer.toString(el.getTemperature()));
+                    jObjectBuilder.add(Constant.JSON_KEY_DATE, usagedate);
+                    jObjectBuilder.add(Constant.JSON_KEY_TIME, Integer.toString(el.getUsagehour()));
+                    arrayBuilder.add(jObjectBuilder.build());
+                }
+            } else if (Constant.VIEW_DAILY.equals(viewType)) {
+                // variable sum usage of 24H
+                double sumUsage = 0.0;
+                double sumTemperature = 0.0;
+                for (Electricity el :usageList) {
+                    // Add this hour usage to sum usage 
+                    sumUsage += el.getTotalUsage();
+                    // Add this hour temperature to sum temperature
+                    sumTemperature += el.getTemperature();
+                }
+                
+                // Create JSON object
+                JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+                jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
+                jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(Math.round(sumUsage * 100.0 / 100.0)));
+                jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Double.toString(Math.round(sumTemperature / 24 * 100.0 / 100.0)));
+                arrayBuilder.add(jObjectBuilder.build());
+            } else {}
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return arrayBuilder.build();
     }
     
     @Override
