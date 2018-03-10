@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import smartER.DAL.SmartERTools;
 
 /**
  *
@@ -39,7 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Electricity.findByResIdDateHour", query = "SELECT e FROM Electricity e WHERE e.resid = :resId AND e.usagedate = :usagedate AND e.usagehour = :usagehour")
     , @NamedQuery(name = "Electricity.findByEmailProvider", query = "SELECT e FROM Electricity e WHERE e.resid.email = :email AND e.resid.energyprovider = :provider")
     , @NamedQuery(name = "Electricity.findByDateHour", query = "SELECT e FROM Electricity e WHERE e.usagedate = :usagedate AND e.usagehour = :usagehour")})
-public class Electricity implements Serializable {
+public class Electricity implements Serializable, Comparable<Electricity> {
 
     private static final long serialVersionUID = 1L;
     // Constant variables to define names of queries
@@ -169,6 +170,11 @@ public class Electricity implements Serializable {
     public void setResid(Resident resid) {
         this.resid = resid;
     }
+    
+    // Get total usage for at this hour on this day for this resident
+    public double getTotalUsage(){
+        return getFridgeusage().doubleValue() + getAcusage().doubleValue() + getWmusage().doubleValue();
+    }
 
     @Override
     public int hashCode() {
@@ -194,5 +200,19 @@ public class Electricity implements Serializable {
     public String toString() {
         return "smartEREntities.Electricity[ usageid=" + usageid + " ]";
     }
-    
+
+    @Override
+    public int compareTo(Electricity o) {
+        // Calculate total usage for this record
+        double myTotalUsage = getTotalUsage();
+        // Calculate total usage for compare object record
+        double totalUsage = o.getTotalUsage();
+        // Compare values
+        if (totalUsage > myTotalUsage)
+            return -1;
+        else if (totalUsage < myTotalUsage)
+            return 1;
+        else 
+            return 0;
+    }
 }

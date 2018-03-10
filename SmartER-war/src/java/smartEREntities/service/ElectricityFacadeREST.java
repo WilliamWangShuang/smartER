@@ -3,6 +3,7 @@ package smartEREntities.service;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import smartER.DAL.Constant;
 import smartER.DAL.SmartERTools;
 import smartEREntities.Electricity;
 import smartEREntities.HourlyUsageInfo;
+import smartEREntities.PeakUsageHourInfo;
 import smartEREntities.Resident;
 
 /**
@@ -169,7 +171,7 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
     @GET     
     @Path("findByResidentFullName/{firstname}/{surename}")     
     @Produces({MediaType.APPLICATION_JSON})     
-    public List<Electricity> findByCourseName(@PathParam("firstname") String firstname, @PathParam("surename") String surename) {
+    public List<Electricity> findByResidentFullName(@PathParam("firstname") String firstname, @PathParam("surename") String surename) {
         TypedQuery<Electricity> q = em.createQuery("SELECT e FROM Electricity e WHERE e.resid.firstname = :firstname AND e.resid.surename = :surename", Electricity.class);         
         q.setParameter("firstname", firstname);
         q.setParameter("surename", surename);
@@ -255,9 +257,7 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             // Sum the usage of the three appliance if the record can be found in DB
             if (foundRecords.size() > 0) {
                 Electricity el = foundRecords.get(0);
-                result = Double.toString(SmartERTools.getTotalUsage(el.getFridgeusage().doubleValue(), 
-                                                                    el.getWmusage().doubleValue(), 
-                                                                    el.getAcusage().doubleValue()));
+                result = Double.toString(el.getTotalUsage());
             } else {
                 result = "";
             }
@@ -297,9 +297,7 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             // Inital result list data 
             for (Electricity el : usageList) {
                 // Calculate total usage for this resident at this hour on this particular day
-                double totalUsage = SmartERTools.getTotalUsage(el.getFridgeusage().doubleValue(), 
-                                                               el.getAcusage().doubleValue(),
-                                                               el.getWmusage().doubleValue());
+                double totalUsage = el.getTotalUsage();
                 int resid = el.getResid().getResid();
                 String address = el.getResid().getAddress();
                 Short postcode = el.getResid().getPostcode();
@@ -308,6 +306,32 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             }
         } catch (Exception ex) {
             throw ex;
+        }
+        return results;
+    }
+    
+    @GET
+    @Path("findPeakHourByResid/{resid}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public List<PeakUsageHourInfo> findPeakHourByResid(@PathParam("resid") Integer resid) {
+        List<PeakUsageHourInfo> results = new ArrayList<>(0);
+        
+        // Find all usage records by resid
+        List<Electricity> allUsages = findByResId(resid);
+        // Sort usage list
+        Collections.sort(allUsages);
+        // Get highest usage value
+        double peakUsage = allUsages.get(allUsages.size() - 1).getTotalUsage();
+        
+        // loop sorted list of usages and find out all peak hours and put them in result list
+        for (int index = allUsages.size() - 1; index >= 0 ; index--){
+            Electricity el = allUsages.get(index);
+            if(peakUsage == el.getTotalUsage()) {
+                PeakUsageHourInfo peakInfo = new PeakUsageHourInfo(el.getUsagedate(), el.getUsagehour(), el.getTotalUsage());
+                results.add(peakInfo);
+            } else if (peakUsage > el.getTotalUsage()) {
+                break;
+            }
         }
         return results;
     }

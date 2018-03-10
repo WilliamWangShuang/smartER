@@ -5,7 +5,5 @@ package smartER.DAL;
  * @author William
  */
 public class SmartERTools {
-    public static double getTotalUsage(double fridgeUsage, double acUsage, double wmUsage) {
-        return fridgeUsage + acUsage + wmUsage;
-    }
+    
 }
