@@ -368,14 +368,15 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
     @Path("findDailyOrHourlyUsage/{resid}/{usagedate}/{viewType}")
     @Produces (MediaType.APPLICATION_JSON)
     public Object findDailyOrHourlyUsage(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate, @PathParam("viewType") String viewType) throws Exception {
-        // Create JSON builder
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        
+        Object result = null;
         try {
             // Get usage list by resid and date
             List<Electricity> usageList = SmartERTools.getUsageByResidAndDate(resid, usagedate, em);
             
             if (Constant.VIEW_HOURLY.equals(viewType)) {
+                // Create JSON builder
+                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                // Loop usage list and construct json objects
                 for (Electricity el :usageList) {
                     // Create JSON object
                     JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
@@ -386,6 +387,8 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
                     jObjectBuilder.add(Constant.JSON_KEY_TIME, Integer.toString(el.getUsagehour()));
                     arrayBuilder.add(jObjectBuilder.build());
                 }
+                // Return result list
+                result = arrayBuilder.build();
             } else if (Constant.VIEW_DAILY.equals(viewType)) {
                 // variable sum usage of 24H
                 double sumUsage = 0.0;
@@ -402,12 +405,12 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
                 jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
                 jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(Math.round(sumUsage * 100.0 / 100.0)));
                 jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Double.toString(Math.round(sumTemperature / 24 * 100.0 / 100.0)));
-                arrayBuilder.add(jObjectBuilder.build());
-            } else {}
+                result = jObjectBuilder.build();
+            } 
         } catch (Exception ex) {
             throw ex;
-        }
-        return arrayBuilder.build();
+        } 
+        return result;
     }
     
     @Override
