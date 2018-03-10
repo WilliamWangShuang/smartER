@@ -38,6 +38,7 @@ import smartER.DAL.SmartERTools;
     , @NamedQuery(name = "Electricity.findByTemperature", query = "SELECT e FROM Electricity e WHERE e.temperature = :temperature")
     , @NamedQuery(name = "Electricity.findByResId", query = "SELECT e FROM Electricity e WHERE e.resid = :resId")
     , @NamedQuery(name = "Electricity.findByResIdDateHour", query = "SELECT e FROM Electricity e WHERE e.resid = :resId AND e.usagedate = :usagedate AND e.usagehour = :usagehour")
+    , @NamedQuery(name = "Electricity.findByResIdDate", query = "SELECT e FROM Electricity e WHERE e.resid.resid = :resId AND e.usagedate = :usagedate")
     , @NamedQuery(name = "Electricity.findByEmailProvider", query = "SELECT e FROM Electricity e WHERE e.resid.email = :email AND e.resid.energyprovider = :provider")
     , @NamedQuery(name = "Electricity.findByDateHour", query = "SELECT e FROM Electricity e WHERE e.usagedate = :usagedate AND e.usagehour = :usagehour")})
 public class Electricity implements Serializable, Comparable<Electricity> {
@@ -54,6 +55,7 @@ public class Electricity implements Serializable, Comparable<Electricity> {
     public final static String GET_BY_RESID_DATE_HOUR ="Electricity.findByResIdDateHour";   
     public final static String GET_BY_EMAIL_PROVIDER = "Electricity.findByEmailProvider";
     public final static String GET_BY_DATE_HOUR = "Electricity.findByDateHour";
+    public final static String GET_BY_RESID_DATE = "Electricity.findByResIdDate";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

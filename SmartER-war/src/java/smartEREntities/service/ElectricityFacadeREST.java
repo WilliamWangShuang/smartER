@@ -26,6 +26,7 @@ import smartEREntities.Electricity;
 import smartEREntities.HourlyUsageInfo;
 import smartEREntities.PeakUsageHourInfo;
 import smartEREntities.Resident;
+import smartEREntities.TotalUsageForEachAppIn24H;
 
 /**
  *
@@ -334,6 +335,36 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             }
         }
         return results;
+    }
+    
+    @GET
+    @Path("findTotalUsageForEachAppIn24H/{resid}/{usagedate}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public TotalUsageForEachAppIn24H findTotalUsageForEachAppIn24H(@PathParam("resid") Integer resid, @PathParam("usagedate") String usagedate) throws Exception {
+        TotalUsageForEachAppIn24H result = null;
+        try {
+            // Convert param usagedate to Date Type
+            Date paramDate = new SimpleDateFormat(Constant.DATE_FORMAT).parse(usagedate);
+            // Create query to find all usage data on the specific date for this resident
+            Query query = em.createNamedQuery(Electricity.GET_BY_RESID_DATE);
+            // Set parameters for query
+            query.setParameter("resId", resid);
+            query.setParameter("usagedate", paramDate);
+            // Execute query
+            List<Electricity> usageList = query.getResultList();
+            
+            // Calculate total usage for all appliances 
+            double fridgeUsage = SmartERTools.getFridgeTotalUsage(usageList);
+            double wmUsage = SmartERTools.getWMTotalUsage(usageList);
+            double acUsage = SmartERTools.getACTotalUsage(usageList);
+            
+            // Initialize reture object
+            result = new TotalUsageForEachAppIn24H(resid, fridgeUsage, acUsage, wmUsage);
+        } catch (Exception ex) {
+            throw ex;
+        }
+        
+        return result;
     }
     
     @Override
