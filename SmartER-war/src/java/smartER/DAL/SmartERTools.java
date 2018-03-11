@@ -18,7 +18,7 @@ public class SmartERTools {
         for (Electricity el : list) {
             result += el.getFridgeusage().doubleValue();
         }
-        return result;
+        return round(result, 2);
     }
     
     // Calculate total fridge usage in a Electricity list.
@@ -27,7 +27,7 @@ public class SmartERTools {
         for (Electricity el : list) {
             result += el.getAcusage().doubleValue();
         }
-        return result;
+        return round(result, 2);
     }
     
     // Calculate total washing machine usage in a Electricity list.
@@ -36,7 +36,7 @@ public class SmartERTools {
         for (Electricity el : list) {
             result += el.getWmusage().doubleValue();
         }
-        return result;
+        return round(result, 2);
     }
     
     // Find usage by resid and date
