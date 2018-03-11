@@ -175,7 +175,7 @@ public class Electricity implements Serializable, Comparable<Electricity> {
     
     // Get total usage for at this hour on this day for this resident
     public double getTotalUsage(){
-        return Math.round((getFridgeusage().doubleValue() + getAcusage().doubleValue() + getWmusage().doubleValue()) * 100.0 / 100.0);
+        return SmartERTools.round(getFridgeusage().doubleValue() + getAcusage().doubleValue() + getWmusage().doubleValue(), 2);
     }
 
     @Override

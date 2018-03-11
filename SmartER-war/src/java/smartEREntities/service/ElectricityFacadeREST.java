@@ -403,8 +403,8 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
                 // Create JSON object
                 JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
                 jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
-                jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(Math.round(sumUsage * 100.0 / 100.0)));
-                jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Double.toString(Math.round(sumTemperature / 24 * 100.0 / 100.0)));
+                jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(SmartERTools.round(sumUsage, 2)));
+                jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Double.toString(SmartERTools.round(sumTemperature / 24, 2)));
                 result = jObjectBuilder.build();
             } 
         } catch (Exception ex) {
