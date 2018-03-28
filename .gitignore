@@ -16,6 +16,16 @@ Databases
 
 # Mobile tools for Java (J2ME)
 .mtj.tmp/
+*.iml
+.gradle
+/local.properties
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
 
 # Package files
 *.jar
