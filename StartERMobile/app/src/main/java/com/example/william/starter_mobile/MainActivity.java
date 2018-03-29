@@ -1,8 +1,11 @@
 package com.example.william.starter_mobile;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,16 +15,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private TextView tvTemp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        tvTemp = findViewById(R.id.tvTemp);
+        setCurrentTemperature();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,5 +111,30 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void setCurrentTemperature(){
+        WeatherFactorial f = new WeatherFactorial();
+        f.execute();
+    }
+
+    private class WeatherFactorial extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String result = "Unknown";
+            try {
+                result = Double.toString(WeatherWebservice.getCurrentTemperature());
+            } catch (Exception ex){
+                Log.e("WS_WEATHER_ERROR", SmartERMobileUtility.getExceptionInfo(ex));
+            } finally {
+                return result;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            tvTemp.setText(result);
+        }
     }
 }
