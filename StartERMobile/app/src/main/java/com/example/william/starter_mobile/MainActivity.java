@@ -1,5 +1,9 @@
 package com.example.william.starter_mobile;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -16,12 +20,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    // TODO : working on alarm
+    private CurrentTempReceiver currentTempReceiver;
     private TextView tvTemp;
 
     @Override
@@ -35,7 +43,17 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         tvTemp = findViewById(R.id.tvTemp);
-        setCurrentTemperature();
+        currentTempReceiver = new CurrentTempReceiver(this);
+
+        //etCurrentTemperature();
+        // Add this inside your class
+        BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                tvTemp.setText(intent.getExtras().getString("currTemp"));
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,28 +131,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setCurrentTemperature(){
+    /*public void setCurrentTemperature(){
         WeatherFactorial f = new WeatherFactorial();
         f.execute();
-    }
-
-    private class WeatherFactorial extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result = "Unknown";
-            try {
-                result = Double.toString(WeatherWebservice.getCurrentTemperature());
-            } catch (Exception ex){
-                Log.e("WS_WEATHER_ERROR", SmartERMobileUtility.getExceptionInfo(ex));
-            } finally {
-                return result;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            tvTemp.setText(result);
-        }
-    }
+    }*/
 }
