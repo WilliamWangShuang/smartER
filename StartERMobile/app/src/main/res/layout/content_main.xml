@@ -23,7 +23,7 @@
             android:id="@+id/tvTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Running..."/>
+            android:text="Loading..."/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,17 +1,12 @@
 package smartER.webservice.Receivers;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
-
-import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 import smartER.webservice.WeatherWebservice;
 

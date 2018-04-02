@@ -22,31 +22,34 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    // TODO : working on alarm
+    // current temperature receiver
     private CurrentTempReceiver currentTempReceiver;
+    // applicance data generator receiver
+    private AppDataGenerator appDataGenerator;
     private TextView tvTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tvTemp = findViewById(R.id.tvTemp);
+        // Set background thread to get current temperature
         currentTempReceiver = new CurrentTempReceiver(this);
+        // Set applicance generated data every hour
+        appDataGenerator = new AppDataGenerator(this);
 
-        //etCurrentTemperature();
-        // Add this inside your class
+        // define broadReceiver onReceive action
         BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -54,6 +57,11 @@ public class MainActivity extends AppCompatActivity
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
+        // Regist AppDataGenerator receiver only receive startGenerateAppDataSignal broadcast
+        registerReceiver(appDataGenerator, new IntentFilter("startGenerateAppDataSignal"));
+        // Trigger app generator
+        this.sendBroadcast(new Intent("startGenerateAppDataSignal"));
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

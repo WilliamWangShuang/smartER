@@ -14,4 +14,13 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void test_getRandomDouble(){
+        double min = 0.3;
+        double max = 0.8;
+        double generate = SmartERMobileUtility.getRandomDoubleNumber(0.3, 0.8);
+        System.out.print("output:" + generate);
+        assertTrue(generate >= min && generate <= max);
+    }
 }
