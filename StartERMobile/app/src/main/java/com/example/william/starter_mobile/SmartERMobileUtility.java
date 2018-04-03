@@ -1,8 +1,13 @@
 package com.example.william.starter_mobile;
 
+import android.app.Application;
+
 import java.util.Random;
 
-public class SmartERMobileUtility {
+public class SmartERMobileUtility extends Application {
+    // Global variable - currenet temperature
+    private static double currentTemp;
+
     // Random generator
     private final static Random random = new Random();
 
@@ -27,5 +32,15 @@ public class SmartERMobileUtility {
     public static int getRandomIntegerNumber(int minValue, int maxValue){
         // return random number in range
         return  random.nextInt((maxValue - minValue) + 1) + minValue;
+    }
+
+    // setter - currentTemp
+    public static void setCurrentTemp(double val){
+        currentTemp = val;
+    }
+
+    // getter - currentTemp
+    public static double getCurrentTemp(){
+        return currentTemp;
     }
 }

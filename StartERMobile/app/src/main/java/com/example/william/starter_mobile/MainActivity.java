@@ -43,24 +43,31 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // get view of current temperature
         tvTemp = findViewById(R.id.tvTemp);
-        // Set background thread to get current temperature
+        // initialize value in view of current temperature
+        try {
+            tvTemp.setText(Double.toString(WeatherWebservice.getCurrentTemperature()));
+        } catch (Exception ex) {
+            Log.e("SmartER-Error", "error occured when initializing current temperature view value.");
+            Log.e("SmartER-Error", SmartERMobileUtility.getExceptionInfo(ex));
+        }
+
+        // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(this);
         // Set applicance generated data every hour
         appDataGenerator = new AppDataGenerator(this);
 
-        // define broadReceiver onReceive action
+        // define broadReceiver onReceive action to update view of currenet temperature timely
         BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 tvTemp.setText(intent.getExtras().getString("currTemp"));
+                // update global variable - currentTemp
+                SmartERMobileUtility.setCurrentTemp(Double.parseDouble(intent.getExtras().getString("currTemp")));
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
-        // Regist AppDataGenerator receiver only receive startGenerateAppDataSignal broadcast
-        registerReceiver(appDataGenerator, new IntentFilter("startGenerateAppDataSignal"));
-        // Trigger app generator
-        this.sendBroadcast(new Intent("startGenerateAppDataSignal"));
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
