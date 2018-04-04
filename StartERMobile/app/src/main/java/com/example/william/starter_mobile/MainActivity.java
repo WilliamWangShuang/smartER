@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
+import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
 import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity
     private CurrentTempReceiver currentTempReceiver;
     // applicance data generator receiver
     private AppDataGenerator appDataGenerator;
+    // context based value reseter
+    private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
     private TextView tvTemp;
 
     @Override
@@ -45,16 +48,13 @@ public class MainActivity extends AppCompatActivity
 
         // get view of current temperature
         tvTemp = findViewById(R.id.tvTemp);
-        // initialize value in view of current temperature
-        try {
-            tvTemp.setText(Double.toString(WeatherWebservice.getCurrentTemperature()));
-        } catch (Exception ex) {
-            Log.e("SmartER-Error", "error occured when initializing current temperature view value.");
-            Log.e("SmartER-Error", SmartERMobileUtility.getExceptionInfo(ex));
-        }
 
+        // Initial context value those which are used to work as the base of generating apps usage
+        SmartERMobileUtility.resetCtxBasedValue();
         // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(this);
+        // Set receiver to generate context based data for generating app usage data every 24 hours
+        resetCtxBasedValuesReceiver = new ResetCtxBasedValuesReceiver(this);
         // Set applicance generated data every hour
         appDataGenerator = new AppDataGenerator(this);
 

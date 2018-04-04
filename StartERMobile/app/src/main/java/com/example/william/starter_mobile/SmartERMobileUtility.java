@@ -2,12 +2,18 @@ package com.example.william.starter_mobile;
 
 import android.app.Application;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class SmartERMobileUtility extends Application {
     // Global variable - currenet temperature
     private static double currentTemp;
-
+    // washing machine start work time;
+    private static int wsStartWorkTime;
+    // air conditioner work time
+    private  static ArrayList<Integer> workTime;
+    // flag to indicate if keep generating washing machine data for continuous consideration
+    private static boolean isContinuGenerate;
     // Random generator
     private final static Random random = new Random();
 
@@ -34,13 +40,58 @@ public class SmartERMobileUtility extends Application {
         return  random.nextInt((maxValue - minValue) + 1) + minValue;
     }
 
-    // setter - currentTemp
+    // getters and setters
     public static void setCurrentTemp(double val){
         currentTemp = val;
     }
 
-    // getter - currentTemp
     public static double getCurrentTemp(){
         return currentTemp;
+    }
+
+    public static int getWsStartWorkTime() {
+        return wsStartWorkTime;
+    }
+
+    public static ArrayList<Integer> getWorkTime() {
+        return workTime;
+    }
+
+    public static boolean isContinuGenerate() {
+        return isContinuGenerate;
+    }
+
+    public static void setWsStartWorkTime(int val) {
+        wsStartWorkTime = val;
+    }
+
+    public static void setWorkTime(ArrayList<Integer> val) {
+        workTime = val;
+    }
+
+    public static void setContinuGenerate(boolean continuGenerate) {
+        isContinuGenerate = continuGenerate;
+    }
+
+    public static void resetCtxBasedValue() {
+        // initial flag isContinueGenerate
+        SmartERMobileUtility.setContinuGenerate(false);
+        // initial air conditioner work time
+        ArrayList<Integer> workTime = new ArrayList<Integer>();
+
+        // Generate a washing machine start work time
+        SmartERMobileUtility.setWsStartWorkTime(SmartERMobileUtility.getRandomIntegerNumber(6, 18));
+        // Generate air conditioner work time
+        int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
+        int workCount = 0;
+        // air conditioner can only work between 9am and 11pm. and up to work 10 hrs.
+        while (9 <= generatedWorkTime && generatedWorkTime <= 23 && workCount < 10) {
+            if(!workTime.contains(generatedWorkTime)) {
+                generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
+                workTime.add(generatedWorkTime);
+                workCount ++;
+            }
+        }
+        SmartERMobileUtility.setWorkTime(workTime);
     }
 }

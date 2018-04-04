@@ -20,20 +20,15 @@ public class AppDataGenerator extends BroadcastReceiver {
     private AlarmManager alarmMgr;
     private Intent i;
     private PendingIntent pi;
-    // array store current 24 hour fridge usage
-    private double firdge24HourUsage[];
-    // array store current 24 hour washing machine usage
-    private double ws24HourUsage[];
-    // array store current 24 hour air conditioner usage
-    private double ac24HourUsage[];
-    // washing machine start work time;
-    private int wsStartWorkTime;
-    // air conditioner work time
-    ArrayList<Integer> workTime;
-    // flag to indicate if keep generating washing machine data for continuous consideration
-    private boolean isContinuGenerate;
+
     // current temperature
-    double currTemp;
+    private double currTemp;
+    // washing machine start work time used in thread
+    private int wsStartTime;
+    // air conditioner working time used in thread
+    private ArrayList<Integer> acWorkTime;
+    // is continue work flag for washing machine used in thread
+    private boolean isContinueWork;
 
     public AppDataGenerator() {}
 
@@ -44,8 +39,8 @@ public class AppDataGenerator extends BroadcastReceiver {
         i = new Intent(context, AppDataGenerator.class);
         // get current pending board cast intent in context
         pi = PendingIntent.getBroadcast(context,0, i,0);
-        // Set repeater do the job of the intent every 24 hours (86400000 milliseconds)
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),50 * 60 * 1000, pi);
+        // Set repeater do the job of the intent every hour
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),3600 * 1000, pi);
     }
 
     // when this receiver receive the captured intent broadcasting to do the work in this onReceive method
@@ -53,18 +48,6 @@ public class AppDataGenerator extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         AppGenerateFactorial f = new AppGenerateFactorial();
         f.execute();
-    }
-
-    public double[] getFirdge24HourUsage() {
-        return firdge24HourUsage;
-    }
-
-    public double[] getWs24HourUsage() {
-        return ws24HourUsage;
-    }
-
-    public double[] getAc24HourUsage() {
-        return ac24HourUsage;
     }
 
     // Generate firdge hourly usage between 0.3 kwh and 0.8 kwh
@@ -75,7 +58,7 @@ public class AppDataGenerator extends BroadcastReceiver {
     // Generate washing machine hourly usage between 0.4 kwh and 1.3 kwh
     private double generateWSHourlyUData() {
         // generate random value to indicate if keep generating ws data or not. 1 means yes, and 0 means no.
-        isContinuGenerate = SmartERMobileUtility.getRandomIntegerNumber(0, 2) == 1;
+        SmartERMobileUtility.setContinuGenerate(SmartERMobileUtility.getRandomIntegerNumber(0, 2) == 1);
         return SmartERMobileUtility.getRandomDoubleNumber(0.4, 1.3);
     }
 
@@ -88,28 +71,12 @@ public class AppDataGenerator extends BroadcastReceiver {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // initial flag isContinueGenerate
-            isContinuGenerate = false;
-            // initial arrays of applicance usage
-            firdge24HourUsage = new double[24];
-            ws24HourUsage = new double[24];
-            ac24HourUsage = new double[24];
-            // initial air conditioner work time
-            workTime = new ArrayList<Integer>();
-
-            // Generate a washing machine start work time
-            wsStartWorkTime = SmartERMobileUtility.getRandomIntegerNumber(6, 18);
-            // Generate air conditioner work time
-            int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
-            int workCount = 0;
-            // air conditioner can only work between 9am and 11pm. and up to work 10 hrs.
-            while (9 <= generatedWorkTime && generatedWorkTime <= 23 && workCount < 10) {
-                if(!workTime.contains(generatedWorkTime)) {
-                    generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
-                    workTime.add(generatedWorkTime);
-                    workCount ++;
-                }
-            }
+            // get washing machine start time
+            wsStartTime = SmartERMobileUtility.getWsStartWorkTime();
+            // get air conditioner working time
+            acWorkTime = SmartERMobileUtility.getWorkTime();
+            // get isContinue flag for washing machine
+            isContinueWork = SmartERMobileUtility.isContinuGenerate();
 
             // get current temperature
             currTemp = SmartERMobileUtility.getCurrentTemp();
@@ -127,13 +94,13 @@ public class AppDataGenerator extends BroadcastReceiver {
             int currentH = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
 
             // load fridge generated data in array
-            firdge24HourUsage[currentH] = generateFridgeData();
+            double currentHourFridgeUsage = generateFridgeData();
             // load washing machine generated data in array
-            ws24HourUsage[currentH] = (currentH >= wsStartWorkTime && currentH < wsStartWorkTime + 3) && isContinuGenerate ? generateWSHourlyUData() : 0.0;
+            double currentHourWSUsage = (currentH >= wsStartTime && currentH < wsStartTime + 3) && isContinueWork ? generateWSHourlyUData() : 0.0;
             // load air conditioner data in array
-            ac24HourUsage[currentH] = workTime.contains(currentH) && currTemp > 20.0 ? generateACHourlyUData() : 0.0;
+            double currentHourACusage = acWorkTime.contains(currentH) && currTemp > 20.0 ? generateACHourlyUData() : 0.0;
 
-            System.out.println("fridge:" + firdge24HourUsage[currentH] + ",ws:" + ws24HourUsage[currentH] + ",ac:" + ac24HourUsage[currentH]);
+            System.out.println("fridge:" + currentHourFridgeUsage + ",ws:" + currentHourWSUsage + ",ac:" + currentHourACusage);
 
             return null;
         }
