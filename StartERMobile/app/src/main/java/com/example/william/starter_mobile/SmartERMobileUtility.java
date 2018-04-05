@@ -1,9 +1,12 @@
 package com.example.william.starter_mobile;
 
 import android.app.Application;
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import smartER.db.SmartERDbHelper;
 
 public class SmartERMobileUtility extends Application {
     // Global variable - currenet temperature
@@ -14,8 +17,12 @@ public class SmartERMobileUtility extends Application {
     private  static ArrayList<Integer> workTime;
     // flag to indicate if keep generating washing machine data for continuous consideration
     private static boolean isContinuGenerate;
+    // resident ID
+    private static int resId;
     // Random generator
     private final static Random random = new Random();
+    // current Context
+    private static Context mContext;
 
     // format exception message
     public static String getExceptionInfo(Exception ex) {
@@ -73,6 +80,23 @@ public class SmartERMobileUtility extends Application {
         isContinuGenerate = continuGenerate;
     }
 
+    public static int getResId() {
+        return resId;
+    }
+
+    public static void setResId(int resId) {
+        SmartERMobileUtility.resId = resId;
+    }
+
+    public static void setmContext(Context mContext) {
+        SmartERMobileUtility.mContext = mContext;
+    }
+
+    public static Context getmContext() {
+        return mContext;
+    }
+
+    // reset base values that are used to generate appliance data
     public static void resetCtxBasedValue() {
         // initial flag isContinueGenerate
         SmartERMobileUtility.setContinuGenerate(false);
@@ -82,7 +106,7 @@ public class SmartERMobileUtility extends Application {
         // Generate a washing machine start work time
         SmartERMobileUtility.setWsStartWorkTime(SmartERMobileUtility.getRandomIntegerNumber(6, 18));
         // Generate air conditioner work time
-        int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
+        int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 24);
         int workCount = 0;
         // air conditioner can only work between 9am and 11pm. and up to work 10 hrs.
         while (9 <= generatedWorkTime && generatedWorkTime <= 23 && workCount < 10) {

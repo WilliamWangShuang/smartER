@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity
 
         // get view of current temperature
         tvTemp = findViewById(R.id.tvTemp);
+        // keep context
+        SmartERMobileUtility.setmContext(this);
 
         // Initial context value those which are used to work as the base of generating apps usage
         SmartERMobileUtility.resetCtxBasedValue();

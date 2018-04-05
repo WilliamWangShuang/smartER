@@ -7,13 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import smartER.webservice.WeatherWebservice;
+import smartER.db.SmartERDbUtility;
 
 public class AppDataGenerator extends BroadcastReceiver {
 
@@ -29,6 +33,8 @@ public class AppDataGenerator extends BroadcastReceiver {
     private ArrayList<Integer> acWorkTime;
     // is continue work flag for washing machine used in thread
     private boolean isContinueWork;
+    // db helper
+    private SmartERDbUtility dbHelper;
 
     public AppDataGenerator() {}
 
@@ -71,6 +77,8 @@ public class AppDataGenerator extends BroadcastReceiver {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            // set db helper
+            dbHelper = new SmartERDbUtility(SmartERMobileUtility.getmContext());
             // get washing machine start time
             wsStartTime = SmartERMobileUtility.getWsStartWorkTime();
             // get air conditioner working time
@@ -100,6 +108,9 @@ public class AppDataGenerator extends BroadcastReceiver {
             // load air conditioner data in array
             double currentHourACusage = acWorkTime.contains(currentH) && currTemp > 20.0 ? generateACHourlyUData() : 0.0;
 
+            // insert hourly usage into SQLite table
+            DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
+            dbHelper.insertAppUsage(df.format(date), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
             System.out.println("fridge:" + currentHourFridgeUsage + ",ws:" + currentHourWSUsage + ",ac:" + currentHourACusage);
 
             return null;

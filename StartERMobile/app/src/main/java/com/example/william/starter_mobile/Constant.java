@@ -8,4 +8,5 @@ public class Constant {
     public static String MSG_401 = "401 Unauthorized. Please check your identity";
     public static String MSG_404 = "404 Web resource not found";
     public static String MSG_500 = "500 Internal error when request web resource";
+    public static String DATE_FORMAT = "yyyy-MM-dd";
 }
