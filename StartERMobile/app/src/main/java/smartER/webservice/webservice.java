@@ -1,23 +1,23 @@
 package smartER.webservice;
 
 import android.os.Build;
-import android.util.Log;
-
-import com.example.william.starter_mobile.R;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONObject;;
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 import com.example.william.starter_mobile.Constant;
 
 public class webservice {
 
+    // get a web service based on URL
     public static JSONObject requestWebService(String serviceUrl) throws IOException, JSONException {
         disableConnectionReuseIfNecessary();
 
@@ -47,10 +47,12 @@ public class webservice {
                     resultJSONObj = new JSONObject(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_500));
                     break;
                 case HttpURLConnection.HTTP_OK:
+                    // get response stream from web service
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // put the stream content into string
                     responseFromWS = getResponseText(in);
+                    // create result Json from the content string
                     resultJSONObj = new JSONObject(responseFromWS);
-                    //resultJSONObj = new JSONObject("main:{temp:300.15,pressure:1007,humidity:74,temp_min:300.15,temp_max:300.15}");
                     break;
                 default:
                     break;
@@ -77,6 +79,56 @@ public class webservice {
         return resultJSONObj;
     }
 
+    // make a POST http request to a web service
+    public static String postWebService(String serviceUrl, JSONObject jsonParam) throws IOException {
+        // response result
+        String result = "";
+        // declare a url connection
+        HttpURLConnection urlConnection=null;
+
+        try {
+            // create connection
+            URL urlToRequest = new URL(serviceUrl);
+            urlConnection = (HttpURLConnection)urlToRequest.openConnection();
+            // set post send true. allow to send to ws
+            urlConnection.setDoOutput(true);
+            // set http request is POST
+            urlConnection.setRequestMethod("POST");
+            // disable caches
+            urlConnection.setUseCaches(false);
+            // set time out in case net is slow
+            urlConnection.setConnectTimeout(10000);
+            urlConnection.setReadTimeout(10000);
+            // set post request header
+            urlConnection.setRequestProperty("Content-Type","application/json");
+
+            // connect url
+            urlConnection.connect();
+
+            // get return
+            DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream ());
+            out.writeBytes(URLEncoder.encode(jsonParam.toString(),"UTF-8"));
+            out.flush ();
+            out.close ();
+
+            // get server response status
+            int HttpResult =urlConnection.getResponseCode();
+            if(HttpResult == HttpURLConnection.HTTP_NO_CONTENT){
+                result = Constant.SUCCESS_MSG;
+            }else{
+                result = urlConnection.getResponseMessage();
+            }
+        } catch (IOException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            // close connection
+            if(urlConnection!=null)
+                urlConnection.disconnect();
+            return result;
+        }
+    }
     /**
      * required in order to prevent issues in earlier Android version.
      */

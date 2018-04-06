@@ -19,12 +19,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
+import smartER.webservice.SmartERUsageWebservice;
 import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     private AppDataGenerator appDataGenerator;
     // context based value reseter
     private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
+    // SmartERUsage webservice
+    private SmartERUsageWebservice smartERUsageWebservice;
     private TextView tvTemp;
 
     @Override
@@ -50,8 +54,13 @@ public class MainActivity extends AppCompatActivity
         tvTemp = findViewById(R.id.tvTemp);
         // keep context
         SmartERMobileUtility.setmContext(this);
+        // TODO: should be put in login logic
+        // set resident ID after login
+        SmartERMobileUtility.setResId(3);
+        // initial SmartERUsage ws
+        smartERUsageWebservice = new SmartERUsageWebservice();
 
-        // Initial context value those which are used to work as the base of generating apps usage
+        // Initial context value for those which are used to work as the base of generating apps usage
         SmartERMobileUtility.resetCtxBasedValue();
         // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(this);
@@ -71,6 +80,19 @@ public class MainActivity extends AppCompatActivity
         };
         registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
 
+        // register click event to button sycn_one_data
+        Button btnSyncOneData=(Button)findViewById(R.id.btn_syncOneData);
+        //registering with onclicklistener
+        btnSyncOneData.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
+                    smartERUsageWebservice.syncOneRecord2SeverDb(null);
+                } catch (Exception ex) {
+                    Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
+                    Toast.makeText(v.getContext(), "Fail to sync the data. An error occurred.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +169,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    /*public void setCurrentTemperature(){
-        WeatherFactorial f = new WeatherFactorial();
-        f.execute();
-    }*/
 }
