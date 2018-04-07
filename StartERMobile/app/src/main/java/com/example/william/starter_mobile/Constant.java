@@ -1,8 +1,11 @@
 package com.example.william.starter_mobile;
 
 public class Constant {
+    // web service URL
     public static String WEATHER_WS_URL = "http://api.openweathermap.org/data/2.5/weather?id=7839805&APPID=8a0223cc559ebf08920e4cbf1279facd";
-    public static String SMARTER_WS_ELECTRICITY_URL = " http://localhost:8080/SmartER-war/webresources/smarterentities.electricity";
+    public static String SMARTER_WS_ELECTRICITY_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity";
+    public static String FIND_USER_BY_ID_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/";
+
     public static String WS_KEY_EXCEPTION = "Exception";
     public static String MSG_401 = "401 Unauthorized. Please check your identity";
     public static String MSG_404 = "404 Web resource not found";
@@ -25,4 +28,12 @@ public class Constant {
     public static String WS_KEY_POSTCODE ="postcode";
     public static String WS_KEY_RESID ="resid";
     public static String WS_KEY_SURE_NAME ="surename";
+
+    // json key for usage ws
+    public static String WS_KEY_AC_USAGE = "acusage";
+    public static String WS_KEY_FRIDGE_USAGE = "fridgeusage";
+    public static String WS_KEY_WM_USAGE = "wmusage";
+    public static String WS_KEY_TEMPERATURE = "temperature";
+    public static String WS_KEY_USAGE_DATE = "usagedate";
+    public static String WS_KEY_USAGE_HOUR = "usagehour";
 }

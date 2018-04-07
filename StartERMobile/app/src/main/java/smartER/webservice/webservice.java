@@ -31,7 +31,8 @@ public class webservice {
             // create connection
             URL urlToRequest = new URL(serviceUrl);
             urlConnection = (HttpURLConnection)urlToRequest.openConnection();
-
+            // set content type to JSON
+            urlConnection.setRequestProperty("Content-Type", "application/json");
             // handle issues
             statusCode = urlConnection.getResponseCode();
 

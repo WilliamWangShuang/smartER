@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 import smartER.db.SmartERDbHelper;
@@ -117,5 +120,15 @@ public class SmartERMobileUtility extends Application {
             }
         }
         SmartERMobileUtility.setWorkTime(workTime);
+    }
+
+    // get current hour
+    public static int getCurrentHour() {
+        // get current system time hour
+        Date date = new Date();   // current date
+        Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+        calendar.setTime(date);   // assigns calendar to given date
+        int currentH = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+        return currentH;
     }
 }

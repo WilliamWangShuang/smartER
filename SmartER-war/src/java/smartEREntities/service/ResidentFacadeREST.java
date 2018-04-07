@@ -56,7 +56,7 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
 
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON})
     public Resident find(@PathParam("id") Integer id) {
         return super.find(id);
     }

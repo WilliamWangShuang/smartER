@@ -96,10 +96,7 @@ public class AppDataGenerator extends BroadcastReceiver {
             Log.d("SmartERDebug","****Set App generator****");
 
             // get current system time hour
-            Date date = new Date();   // current date
-            Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-            calendar.setTime(date);   // assigns calendar to given date
-            int currentH = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
+            int currentH = SmartERMobileUtility.getCurrentHour(); // gets hour in 24h format
 
             // load fridge generated data in array
             double currentHourFridgeUsage = generateFridgeData();
@@ -110,7 +107,7 @@ public class AppDataGenerator extends BroadcastReceiver {
 
             // insert hourly usage into SQLite table
             DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
-            dbHelper.insertAppUsage(df.format(date), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
+            dbHelper.insertAppUsage(df.format(new Date()), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
             System.out.println("fridge:" + currentHourFridgeUsage + ",ws:" + currentHourWSUsage + ",ac:" + currentHourACusage);
 
             return null;

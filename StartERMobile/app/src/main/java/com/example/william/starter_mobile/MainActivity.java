@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity
         //registering with onclicklistener
         btnSyncOneData.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                try {
-                    smartERUsageWebservice.syncOneRecord2SeverDb(null);
-                } catch (Exception ex) {
-                    Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
+                // POST to sync one record to system
+                String postResult  = smartERUsageWebservice.syncOneRecord2SeverDb();
+                if (Constant.SUCCESS_MSG.equals(postResult))
+                    Toast.makeText(v.getContext(), "Success to sync the data. An error occurred.", Toast.LENGTH_LONG).show();
+                else
                     Toast.makeText(v.getContext(), "Fail to sync the data. An error occurred.", Toast.LENGTH_LONG).show();
-                }
             }
         });
 

@@ -2,17 +2,28 @@ package smartER.webservice;
 
 import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DateFormat;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SmartERUserWebservice {
     // get profile of current login user
+    public static JSONObject findCurrentUserById() throws IOException, JSONException {
+        // result object
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = webservice.requestWebService(Constant.FIND_USER_BY_ID_WS + SmartERMobileUtility.getResId());
+        } catch (Exception ex) {
+            throw ex;
+        }
+        // return result
+        return jsonObject;
+    }
+
+    // inner class working as entity class for user
     public class UserProfile {
         // resident id
         private int resId;
@@ -45,7 +56,86 @@ public class SmartERUserWebservice {
             address = jsonObject.getString(Constant.WS_KEY_ADDRESS);
             Date date1=new SimpleDateFormat(Constant.DATE_FORMAT).parse(jsonObject.getString(Constant.WS_KEY_DOB).substring(0, 9));
             dob = date1;
-            //TODO
+            email = jsonObject.getString(Constant.WS_KEY_EMAIL);
+            energyProvider = jsonObject.getString(Constant.WS_KEY_ENERGY_PROVIDER);
+            firstName = jsonObject.getString(Constant.WS_KEY_FIRST_NAME);
+            phone = jsonObject.getString(Constant.WS_KEY_MOBILE);
+            noOfResident = jsonObject.getInt(Constant.WS_KEY_NO_OF_RESIDENT);
+            postCode = jsonObject.getString(Constant.WS_KEY_POSTCODE);
+            sureName = jsonObject.getString(Constant.WS_KEY_SURE_NAME);
+        }
+
+        // getters and setters
+        public String getAddress() {
+            return address;
+        }
+
+        public Date getDob() {
+            return dob;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getEnergyProvider() {
+            return energyProvider;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public int getNoOfResident() {
+            return noOfResident;
+        }
+
+        public String getPostCode() {
+            return postCode;
+        }
+
+        public String getSureName() {
+            return sureName;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public void setDob(Date dob) {
+            this.dob = dob;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public void setEnergyProvider(String energyProvider) {
+            this.energyProvider = energyProvider;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public void setNoOfResident(int noOfResident) {
+            this.noOfResident = noOfResident;
+        }
+
+        public void setPostCode(String postCode) {
+            this.postCode = postCode;
+        }
+
+        public void setSureName(String sureName) {
+            this.sureName = sureName;
         }
     }
 }
