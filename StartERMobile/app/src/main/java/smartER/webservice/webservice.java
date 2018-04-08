@@ -1,12 +1,16 @@
 package smartER.webservice;
 
 import android.os.Build;
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -91,8 +95,6 @@ public class webservice {
             // create connection
             URL urlToRequest = new URL(serviceUrl);
             urlConnection = (HttpURLConnection)urlToRequest.openConnection();
-            // set post send true. allow to send to ws
-            urlConnection.setDoOutput(true);
             // set http request is POST
             urlConnection.setRequestMethod("POST");
             // disable caches
@@ -101,19 +103,21 @@ public class webservice {
             urlConnection.setConnectTimeout(10000);
             urlConnection.setReadTimeout(10000);
             // set post request header
-            urlConnection.setRequestProperty("Content-Type","application/json");
+            urlConnection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+            // set post send true. allow to send to ws
+            urlConnection.setDoOutput(true);
+
+            // set stream sent to server
+            OutputStream outputPost = new BufferedOutputStream(urlConnection.getOutputStream());
+            outputPost.write(jsonParam.toString().getBytes());
+            outputPost.flush();
+            outputPost.close();
 
             // connect url
             urlConnection.connect();
 
-            // get return
-            DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream ());
-            out.writeBytes(URLEncoder.encode(jsonParam.toString(),"UTF-8"));
-            out.flush ();
-            out.close ();
-
             // get server response status
-            int HttpResult =urlConnection.getResponseCode();
+            int HttpResult = urlConnection.getResponseCode();
             if(HttpResult == HttpURLConnection.HTTP_NO_CONTENT){
                 result = Constant.SUCCESS_MSG;
             }else{

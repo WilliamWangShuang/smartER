@@ -11,6 +11,7 @@ public class Constant {
     public static String MSG_404 = "404 Web resource not found";
     public static String MSG_500 = "500 Internal error when request web resource";
     public static String DATE_FORMAT = "yyyy-MM-dd";
+    public static String SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static String SUCCESS_MSG = "Success";
 
     // json key for weather ws

@@ -107,7 +107,8 @@ public class AppDataGenerator extends BroadcastReceiver {
 
             // insert hourly usage into SQLite table
             DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
-            dbHelper.insertAppUsage(df.format(new Date()), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
+            long rowId = dbHelper.insertAppUsage(df.format(new Date()), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
+            Log.d("SmartERDebug", "new row id:" + rowId);
             System.out.println("fridge:" + currentHourFridgeUsage + ",ws:" + currentHourWSUsage + ",ac:" + currentHourACusage);
 
             return null;

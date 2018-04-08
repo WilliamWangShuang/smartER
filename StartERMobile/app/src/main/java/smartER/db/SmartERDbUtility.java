@@ -3,6 +3,7 @@ package smartER.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -40,19 +41,18 @@ public class SmartERDbUtility {
     public long insertAppUsage(String usageDate, int usageHour, double fridgeUsage, double wsUsage, double acUsage, int temperature) {
         // row id of new usage data in SQLite Table
         long newRowId = -1;
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         try {
-            // Gets the data repository in write mode
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
             values.put(applianceUsage.COLUMN_NAME_RESID, SmartERMobileUtility.getResId());
             values.put(applianceUsage.COLUMN_NAME_USAGEDATE, usageDate);
             values.put(applianceUsage.COLUMN_NAME_USAGEHOUR, usageHour);
             values.put(applianceUsage.COLUMN_NAME_FRIDGEUSAGE, fridgeUsage);
-            values.put(applianceUsage.COLUMN_NAME_ACUSAGE, wsUsage);
-            values.put(applianceUsage.COLUMN_NAME_WMUSAGE, acUsage);
+            values.put(applianceUsage.COLUMN_NAME_ACUSAGE, acUsage);
+            values.put(applianceUsage.COLUMN_NAME_WMUSAGE, wsUsage);
             values.put(applianceUsage.COLUMN_NAME_TEMPERATURE, temperature);
 
             // Insert the new row, returning the primary key value of the new row
@@ -63,6 +63,7 @@ public class SmartERDbUtility {
         } catch (Exception ex) {
             Log.e("SmartERDebug", "Error occurred when inserting hourly usage.\n" + SmartERMobileUtility.getExceptionInfo(ex));
         } finally {
+            db.close();
             return newRowId;
         }
     }
@@ -83,21 +84,22 @@ public class SmartERDbUtility {
                 " WHERE " +
                 applianceUsage.COLUMN_NAME_RESID + " = " +
                 SmartERMobileUtility.getResId() + " AND " +
-                applianceUsage.COLUMN_NAME_USAGEDATE + " = " +
-                df.format(new Date()) + " AND " +
+                applianceUsage.COLUMN_NAME_USAGEDATE + " = '" +
+                df.format(new Date()) + "' AND " +
                 applianceUsage.COLUMN_NAME_USAGEHOUR + " = " +
                 currentHour;
-
         Log.d("SmartERDebug", "sql:" + queryString);
+
         // execute query
         Cursor c = db.rawQuery(queryString, null);
         // get the first met query record
         c.moveToFirst();
         // get usage data
-        double fridgeData = c.getDouble(1);
-        double acData = c.getDouble(2);
-        double wmData = c.getDouble(3);
+        double fridgeData = c.getDouble(0);
+        double acData = c.getDouble(1);
+        double wmData = c.getDouble(2);
 
+        db.close();
         return new AppUsageEntity(fridgeData, wmData, acData);
     }
 

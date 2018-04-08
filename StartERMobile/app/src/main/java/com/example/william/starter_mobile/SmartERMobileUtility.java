@@ -2,7 +2,6 @@ package com.example.william.starter_mobile;
 
 import android.app.Application;
 import android.content.Context;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.Random;
 import smartER.db.SmartERDbHelper;
 
 public class SmartERMobileUtility extends Application {
+
     // Global variable - currenet temperature
     private static double currentTemp;
     // washing machine start work time;
@@ -26,6 +26,8 @@ public class SmartERMobileUtility extends Application {
     private final static Random random = new Random();
     // current Context
     private static Context mContext;
+    // sync one record result
+    private static String syncOneRecordResult;
 
     // format exception message
     public static String getExceptionInfo(Exception ex) {
@@ -130,5 +132,13 @@ public class SmartERMobileUtility extends Application {
         calendar.setTime(date);   // assigns calendar to given date
         int currentH = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
         return currentH;
+    }
+
+    public static String getSyncOneRecordResult() {
+        return syncOneRecordResult;
+    }
+
+    public static void setSyncOneRecordResult(String syncOneRecordResult) {
+        SmartERMobileUtility.syncOneRecordResult = syncOneRecordResult;
     }
 }

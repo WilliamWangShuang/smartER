@@ -4,12 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,12 +19,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
 import smartER.webservice.SmartERUsageWebservice;
-import smartER.webservice.WeatherWebservice;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -86,11 +81,8 @@ public class MainActivity extends AppCompatActivity
         btnSyncOneData.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // POST to sync one record to system
-                String postResult  = smartERUsageWebservice.syncOneRecord2SeverDb();
-                if (Constant.SUCCESS_MSG.equals(postResult))
-                    Toast.makeText(v.getContext(), "Success to sync the data. An error occurred.", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(v.getContext(), "Fail to sync the data. An error occurred.", Toast.LENGTH_LONG).show();
+                smartERUsageWebservice.syncOneRecord2SeverDb(v);
+
             }
         });
 
