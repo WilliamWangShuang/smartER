@@ -18,8 +18,6 @@ public class Sync24HourUsageDateReceiver extends BroadcastReceiver {
     public Sync24HourUsageDateReceiver() {}
 
     public Sync24HourUsageDateReceiver(Context context){
-        // create SmartER usage ws
-        smartERUsageWebservice = new SmartERUsageWebservice();
         // Initial alarm manager used to set repeat clock
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         // Define which intent to be broadcast to context
@@ -32,7 +30,10 @@ public class Sync24HourUsageDateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // create SmartER usage ws
+        smartERUsageWebservice = new SmartERUsageWebservice();
         // do the sync logic
-        smartERUsageWebservice.syncAllRecord2ServerDb();
+        if (smartERUsageWebservice != null)
+            smartERUsageWebservice.syncAllRecord2ServerDb();
     }
 }
