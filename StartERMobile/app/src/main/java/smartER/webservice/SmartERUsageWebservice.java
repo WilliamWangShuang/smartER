@@ -165,7 +165,7 @@ public class SmartERUsageWebservice {
                 // parse POST Json
                 JSONArray jsonParam = parseJsonObjForAllData(context);
                 Log.d("SmartERDebug", "parsed json to post:" + jsonParam.toString());
-                result = webservice.postWebServiceSyncAllData(Constant.SMARTER_WS_ELECTRICITY_URL, jsonParam);
+                result = webservice.postWebServiceSyncAllData(Constant.CREATE_MULTIPLE_DATA_URL, jsonParam);
             } catch (IOException ex) {
                 Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
                 result = SmartERMobileUtility.getExceptionInfo(ex);

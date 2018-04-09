@@ -23,7 +23,7 @@ public class Sync24HourUsageDateReceiver extends BroadcastReceiver {
         // Initial alarm manager used to set repeat clock
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         // Define which intent to be broadcast to context
-        i = new Intent(context, SmartERUsageWebservice.class);
+        i = new Intent(context, Sync24HourUsageDateReceiver.class);
         // get current pending board cast intent in context
         pi = PendingIntent.getBroadcast(context,0, i,0);
         // Set repeater do the job of the intent every hour
