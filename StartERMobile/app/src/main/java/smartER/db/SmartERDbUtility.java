@@ -37,6 +37,7 @@ public class SmartERDbUtility {
         // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int deletedRows = db.delete(applianceUsage.TABLE_NAME, null, null);
+        db.close();
     }
 
     // insert appliance usage
@@ -123,9 +124,6 @@ public class SmartERDbUtility {
 
         // execute query
         Cursor c = db.rawQuery(queryString, null);
-        // get the first met query record
-        c.moveToFirst();
-
         // loop query result from SQLite and construct return reuslt
         while (c.moveToNext()) {
             // get usage data

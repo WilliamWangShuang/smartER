@@ -27,6 +27,8 @@ import smartER.db.SmartERDbUtility;
 
 public class SmartERUsageWebservice {
 
+    private SmartERDbUtility smartERDbUtility;
+
     // call RESTful web service to do the POST request
     public void syncOneRecord2SeverDb(View v) {
         SyncOneRecordFactorial smartERUsageFactorial = new SyncOneRecordFactorial();
@@ -46,7 +48,7 @@ public class SmartERUsageWebservice {
         JSONObject userProfileJsonObject = SmartERUserWebservice.findCurrentUserById();
 
         // get appliance usage from SQLite db
-        SmartERDbUtility smartERDbUtility = new SmartERDbUtility(context);
+        smartERDbUtility = new SmartERDbUtility(context);
         SmartERDbUtility.AppUsageEntity appUsageEntity = smartERDbUtility.getCurrentHourAppUsage(SmartERMobileUtility.getCurrentHour(), SmartERMobileUtility.getResId());
 
         // parse result Json object
@@ -68,8 +70,8 @@ public class SmartERUsageWebservice {
         // get user profile json object
         JSONObject userProfileJsonObject = SmartERUserWebservice.findCurrentUserById();
 
-        // get SQLite data
-        SmartERDbUtility smartERDbUtility = new SmartERDbUtility(context);
+        // get SQLite data helper
+        smartERDbUtility = new SmartERDbUtility(context);
         // get all data in SQLite
         List<SmartERDbUtility.AppUsageEntity> appUsageList = smartERDbUtility.getAllExistData();
         for (SmartERDbUtility.AppUsageEntity entity : appUsageList) {
@@ -165,7 +167,12 @@ public class SmartERUsageWebservice {
                 // parse POST Json
                 JSONArray jsonParam = parseJsonObjForAllData(context);
                 Log.d("SmartERDebug", "parsed json to post:" + jsonParam.toString());
-                result = webservice.postWebServiceSyncAllData(Constant.CREATE_MULTIPLE_DATA_URL, jsonParam);
+                if (jsonParam.length() != 0) {
+                    result = webservice.postWebServiceSyncAllData(Constant.CREATE_MULTIPLE_DATA_URL, jsonParam);
+                    // truncate SQLite
+                    smartERDbUtility = new SmartERDbUtility(SmartERMobileUtility.getmContext());
+                    smartERDbUtility.truncateElectricityTable();
+                }
             } catch (IOException ex) {
                 Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
                 result = SmartERMobileUtility.getExceptionInfo(ex);

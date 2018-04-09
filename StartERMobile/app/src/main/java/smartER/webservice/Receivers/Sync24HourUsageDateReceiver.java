@@ -25,7 +25,7 @@ public class Sync24HourUsageDateReceiver extends BroadcastReceiver {
         // get current pending board cast intent in context
         pi = PendingIntent.getBroadcast(context,0, i,0);
         // Set repeater do the job of the intent every hour
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), AlarmManager.INTERVAL_DAY, pi);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),1000, pi);
     }
 
     @Override
