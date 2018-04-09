@@ -13,7 +13,9 @@ import com.example.william.starter_mobile.SmartERMobileUtility;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SmartERDbUtility {
     // get db helper
@@ -101,6 +103,45 @@ public class SmartERDbUtility {
 
         db.close();
         return new AppUsageEntity(fridgeData, wmData, acData);
+    }
+
+    // query all data exist in SQLite
+    public List<AppUsageEntity> getAllExistData() {
+        List<AppUsageEntity> result = new ArrayList<>();
+        // get SQLite db
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        // create table contract
+        SmartERContract.ApplianceUsage applianceUsage = new SmartERContract.ApplianceUsage();
+        // date formatter to covert current date to string so that can be used in SQLite query
+        DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
+        // SQL string
+        String queryString = "SELECT " + applianceUsage.COLUMN_NAME_FRIDGEUSAGE  + "," +
+                applianceUsage.COLUMN_NAME_ACUSAGE + "," +
+                applianceUsage.COLUMN_NAME_WMUSAGE +
+                " FROM " + applianceUsage.TABLE_NAME;
+        Log.d("SmartERDebug", "sql:" + queryString);
+
+        // execute query
+        Cursor c = db.rawQuery(queryString, null);
+        // get the first met query record
+        c.moveToFirst();
+
+        // loop query result from SQLite and construct return reuslt
+        while (c.moveToNext()) {
+            // get usage data
+            double fridgeData = c.getDouble(0);
+            double acData = c.getDouble(1);
+            double wmData = c.getDouble(2);
+
+            // create one data entity and add it to result list
+            AppUsageEntity appUsageEntity = new AppUsageEntity(fridgeData, wmData, acData);
+            result.add(appUsageEntity);
+        }
+
+        // cloase db connection
+        db.close();
+        // returne result
+        return result;
     }
 
     // entity class to transfer appliances usage for current hour

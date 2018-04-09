@@ -53,7 +53,16 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
     public void create(Electricity entity) {
         super.create(entity);
     }
-
+    
+    @POST
+    @Path("createMulitple")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void createMultiple(List<Electricity> entityList) {
+        for (Electricity entity : entityList) {
+            super.create(entity);
+        }
+    }
+    
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

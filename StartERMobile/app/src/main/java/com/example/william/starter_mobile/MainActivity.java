@@ -19,9 +19,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import smartER.webservice.Receivers.AppDataGenerator;
-import smartER.webservice.Receivers.CurrentTempReceiver;
-import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
+import smartER.webservice.Receivers.*;
 import smartER.webservice.SmartERUsageWebservice;
 
 public class MainActivity extends AppCompatActivity
@@ -33,6 +31,8 @@ public class MainActivity extends AppCompatActivity
     private AppDataGenerator appDataGenerator;
     // context based value reseter
     private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
+    // sync 24-hour data to server receiver
+    private Sync24HourUsageDateReceiver sync24HourUsageDateFactorial;
     // SmartERUsage webservice
     private SmartERUsageWebservice smartERUsageWebservice;
     private TextView tvTemp;
@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity
         resetCtxBasedValuesReceiver = new ResetCtxBasedValuesReceiver(this);
         // Set applicance generated data every hour
         appDataGenerator = new AppDataGenerator(this);
+        // Set sync 24-hour data receiver
+        sync24HourUsageDateFactorial  = new Sync24HourUsageDateReceiver(this);
 
         // define broadReceiver onReceive action to update view of currenet temperature timely
         BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
