@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     // context based value reseter
     private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
     // sync 24-hour data to server receiver
-    private Sync24HourUsageDateReceiver sync24HourUsageDateFactorial;
+    private Sync24HourUsageDateReceiver sync24HourUsageDateReceiver;
     // SmartERUsage webservice
     private SmartERUsageWebservice smartERUsageWebservice;
     private TextView tvTemp;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         // Set applicance generated data every hour
         appDataGenerator = new AppDataGenerator(this);
         // Set sync 24-hour data receiver
-        sync24HourUsageDateFactorial  = new Sync24HourUsageDateReceiver(this);
+        sync24HourUsageDateReceiver  = new Sync24HourUsageDateReceiver(this);
 
         // define broadReceiver onReceive action to update view of currenet temperature timely
         BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {

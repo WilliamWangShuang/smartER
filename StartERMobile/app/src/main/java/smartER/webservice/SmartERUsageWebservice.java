@@ -33,6 +33,12 @@ public class SmartERUsageWebservice {
         smartERUsageFactorial.execute();
     }
 
+    // call RESTful web service to do the POST request to sync all data to server
+    public void syncAllRecord2ServerDb() {
+        SyncAllRecordFactorial syncAllRecordFactorial = new SyncAllRecordFactorial();
+        syncAllRecordFactorial.execute();
+    }
+
     // parse JSONObject for one usage data
     private JSONObject parseJsonObjForOneData(Context context) throws IOException, JSONException {
         JSONObject result = new JSONObject();
