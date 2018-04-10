@@ -8,29 +8,13 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/lblCurrentTemp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Current Temperature:"/>
 
-        <TextView
-            android:id="@+id/tvTemp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loading..."/>
-
-        <Button
-            android:id="@+id/btn_syncOneData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sync Test Data" />
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
