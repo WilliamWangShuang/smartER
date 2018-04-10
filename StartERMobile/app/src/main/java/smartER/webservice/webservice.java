@@ -89,6 +89,11 @@ public class webservice {
     public static String postWebService(String serviceUrl, JSONObject jsonParam) throws IOException {
         // response result
         String result = "";
+
+        // if json content is empty, driectly return success message
+        if (jsonParam.length() == 0)
+            return Constant.SUCCESS_MSG;
+
         // declare a url connection
         HttpURLConnection urlConnection=null;
 

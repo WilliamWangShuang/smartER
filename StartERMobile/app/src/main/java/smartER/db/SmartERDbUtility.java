@@ -98,12 +98,18 @@ public class SmartERDbUtility {
         // get the first met query record
         c.moveToFirst();
         // get usage data
-        double fridgeData = c.getDouble(0);
-        double acData = c.getDouble(1);
-        double wmData = c.getDouble(2);
+        double fridgeData = 0.0;
+        double acData = 0.0;
+        double wmData = 0.0;
+        if (c.getCount() > 0) {
+            fridgeData = c.getDouble(0);
+            acData = c.getDouble(1);
+            wmData = c.getDouble(2);
+        }
 
         db.close();
-        return new AppUsageEntity(fridgeData, wmData, acData);
+        // if no match reocord found, return null
+        return c.getCount() > 0 ?  new AppUsageEntity(fridgeData, wmData, acData) : null;
     }
 
     // query all data exist in SQLite
