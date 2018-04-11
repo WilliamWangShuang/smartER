@@ -9,6 +9,6 @@
         android:id="@+id/mapquestMapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:mapquest_app_key="HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp" />
+        app:mapquest_app_key="@string/access_token" />
 
 </RelativeLayout>

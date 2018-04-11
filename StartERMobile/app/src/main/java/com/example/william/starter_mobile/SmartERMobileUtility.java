@@ -2,6 +2,9 @@ package com.example.william.starter_mobile;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

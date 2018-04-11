@@ -6,6 +6,7 @@ public class Constant {
     public static String SMARTER_WS_ELECTRICITY_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity";
     public static String FIND_USER_BY_ID_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/";
     public static String CREATE_MULTIPLE_DATA_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/createMulitple";
+    public static String MAP_WS_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp&thumbMaps=false&location=";
 
     public static String WS_KEY_EXCEPTION = "Exception";
     public static String MSG_401 = "401 Unauthorized. Please check your identity";
@@ -38,4 +39,11 @@ public class Constant {
     public static String WS_KEY_TEMPERATURE = "temperature";
     public static String WS_KEY_USAGE_DATE = "usagedate";
     public static String WS_KEY_USAGE_HOUR = "usagehour";
+
+    // json key for map ws
+    public static String WS_KEY_MAP_RESULT = "results";
+    public static String WS_KEY_MAP_LOCATION ="locations";
+    public static String WS_KEY_MAP_LATLNG = "latLng";
+    public static String WS_KEY__MAP_LAT = "lat";
+    public static String WS_KEY_MAP_LNG = "lng";
 }

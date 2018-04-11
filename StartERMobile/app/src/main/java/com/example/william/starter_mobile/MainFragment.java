@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
