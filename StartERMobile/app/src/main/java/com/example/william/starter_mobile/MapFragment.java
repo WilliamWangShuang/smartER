@@ -10,17 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.mapbox.mapboxsdk.MapboxAccountManager;
+import com.mapbox.mapboxsdk.telemetry.MqEventManager;
+import com.mapquest.android.commoncore.util.VolleyUtil;
 import com.mapquest.mapping.maps.OnMapReadyCallback;
 import com.mapquest.mapping.maps.MapboxMap;
 import com.mapquest.mapping.maps.MapView;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import org.json.JSONException;
-
 import java.io.IOException;
-
 import smartER.webservice.MapWebservice;
 
 public class MapFragment extends Fragment {
@@ -42,9 +41,8 @@ public class MapFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // create map view
         Activity activity = getActivity();
-        mMapView = (MapView)activity.findViewById(R.id.mapquestMapView);Log.d("SmartERDebug", "333333333" + (mMapView == null));
-        mMapView.onCreate(savedInstanceState);
 
+        mMapView = (MapView)activity.findViewById(R.id.mapquestMapView);
         MapFragmentFactorial mapFragmentFactorial = new MapFragmentFactorial(mMapView, savedInstanceState);
         mapFragmentFactorial.execute();
     }
@@ -56,9 +54,9 @@ public class MapFragment extends Fragment {
 
         // constructor
         public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState){
-            Log.d("SmartERDebug", "5555555");
             this.savedInstanceState = savedInstanceState;
             this.mMapView = mMapView;
+            this.mMapView.onCreate(savedInstanceState);
         }
 
         @Override
@@ -86,10 +84,7 @@ public class MapFragment extends Fragment {
 
         @Override
         protected void onPostExecute(LatLng result) {
-            Log.d("SmartERDebug", "66666666");
             myLocation = result;
-            // start MapQuest account manager
-            MapboxAccountManager.start(getActivity().getApplicationContext());
 
             // synchronize map view
             mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -136,6 +131,7 @@ public class MapFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState)
     {
         if(outState != null) {
+            Log.d("SmaertERDebug", "on save instance state...");
             super.onSaveInstanceState(outState);
             mMapView.onSaveInstanceState(outState);
         }

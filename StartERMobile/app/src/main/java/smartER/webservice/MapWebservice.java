@@ -1,5 +1,7 @@
 package smartER.webservice;
 
+import android.util.Log;
+
 import com.example.william.starter_mobile.Constant;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -17,6 +19,7 @@ public class MapWebservice {
         LatLng latLng = new LatLng();
         // encode address
         address = address.replaceAll(" ", "%20");
+
         // Call the service to get data
         JSONObject jsonFromWs = webservice.requestWebService(Constant.MAP_WS_URL + address);
 

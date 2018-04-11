@@ -22,6 +22,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mapbox.mapboxsdk.MapboxAccountManager;
+
 import smartER.webservice.Receivers.*;
 import smartER.webservice.SmartERUsageWebservice;
 
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // start map box manager
+        MapboxAccountManager.start(getApplicationContext());
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
 
