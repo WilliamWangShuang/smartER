@@ -30,10 +30,8 @@ public class MapFragment extends Fragment {
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         vMapFragment = inflater.inflate(R.layout.map_fragment, container, false);
         // create map view
-        //Activity activity = getActivity();
-        //mMapView = (MapView)activity.findViewById(R.id.mapquestMapView);
         mMapView = (MapView)vMapFragment.findViewById(R.id.mapquestMapView);
-        mMapView.onCreate(savedInstanceState != null ? savedInstanceState.getBundle("mapViewSaveState") : null);
+        mMapView.onCreate(savedInstanceState);
         return vMapFragment;
     }
 
@@ -69,8 +67,9 @@ public class MapFragment extends Fragment {
             LatLng result = new LatLng();
             // TODO: my address - test purpose
             String address = "14 Brixton ave,Eltham North,VIC";
+            String postcode = "3095";
             try {
-                result = MapWebservice.getLatLngByAddress(address);
+                result = MapWebservice.getLatLngByAddress(address, postcode);
             } catch (IOException e) {
                 Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
             } catch (JSONException e) {
@@ -129,12 +128,6 @@ public class MapFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState)
     {
         Log.d("SmartERDebug", "on save instance state...");
-        final Bundle mapViewSaveState = new Bundle(outState);
-        mMapView.onSaveInstanceState(mapViewSaveState);
-        outState.putBundle("mapViewSaveState", mapViewSaveState);
-
-        Bundle customBundle = new Bundle();
-        outState.putBundle("ARG_CUSTOM_BUNDLE", customBundle);
         super.onSaveInstanceState(outState);
     }
 }

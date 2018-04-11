@@ -15,13 +15,13 @@ public class MapWebservice {
     private static JSONObject mapInfoByWS = null;
 
     // get latitude by address
-    public static LatLng getLatLngByAddress(String address) throws IOException, JSONException {
+    public static LatLng getLatLngByAddress(String address, String postcode) throws IOException, JSONException {
         LatLng latLng = new LatLng();
         // encode address
         address = address.replaceAll(" ", "%20");
 
         // Call the service to get data
-        JSONObject jsonFromWs = webservice.requestWebService(Constant.MAP_WS_URL + address);
+        JSONObject jsonFromWs = webservice.requestWebService(Constant.MAP_WS_URL + address + "&postalCode=" + postcode);
 
         // get latLng json from the ws result
         JSONArray jsonNodeResult = jsonFromWs.getJSONArray(Constant.WS_KEY_MAP_RESULT);
