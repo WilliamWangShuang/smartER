@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.mapbox.mapboxsdk.MapboxAccountManager;
-import com.mapbox.mapboxsdk.telemetry.MqEventManager;
-import com.mapquest.android.commoncore.util.VolleyUtil;
 import com.mapquest.mapping.maps.OnMapReadyCallback;
 import com.mapquest.mapping.maps.MapboxMap;
 import com.mapquest.mapping.maps.MapView;
@@ -24,7 +21,6 @@ import smartER.webservice.MapWebservice;
 
 public class MapFragment extends Fragment {
     View vMapFragment;
-    private MapboxMap mMapboxMap;
     private MapView mMapView;
     // my address geographical position
     private LatLng myLocation;
@@ -33,16 +29,17 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         vMapFragment = inflater.inflate(R.layout.map_fragment, container, false);
-
+        // create map view
+        //Activity activity = getActivity();
+        //mMapView = (MapView)activity.findViewById(R.id.mapquestMapView);
+        mMapView = (MapView)vMapFragment.findViewById(R.id.mapquestMapView);
+        mMapView.onCreate(savedInstanceState != null ? savedInstanceState.getBundle("mapViewSaveState") : null);
         return vMapFragment;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        // create map view
-        Activity activity = getActivity();
-
-        mMapView = (MapView)activity.findViewById(R.id.mapquestMapView);
+        // start map view asynchronically
         MapFragmentFactorial mapFragmentFactorial = new MapFragmentFactorial(mMapView, savedInstanceState);
         mapFragmentFactorial.execute();
     }
@@ -51,12 +48,13 @@ public class MapFragment extends Fragment {
         Bundle savedInstanceState = null;
         MapView mMapView = null;
         LatLng myLocation = null;
+        MapboxMap mMapboxMap = null;
 
         // constructor
         public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState){
             this.savedInstanceState = savedInstanceState;
             this.mMapView = mMapView;
-            this.mMapView.onCreate(savedInstanceState);
+            //this.mMapView.onCreate(savedInstanceState);
         }
 
         @Override
@@ -123,17 +121,20 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy()
     {
-        super.onDestroy();
         mMapView.onDestroy();
+        super.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
-        if(outState != null) {
-            Log.d("SmaertERDebug", "on save instance state...");
-            super.onSaveInstanceState(outState);
-            mMapView.onSaveInstanceState(outState);
-        }
+        Log.d("SmartERDebug", "on save instance state...");
+        final Bundle mapViewSaveState = new Bundle(outState);
+        mMapView.onSaveInstanceState(mapViewSaveState);
+        outState.putBundle("mapViewSaveState", mapViewSaveState);
+
+        Bundle customBundle = new Bundle();
+        outState.putBundle("ARG_CUSTOM_BUNDLE", customBundle);
+        super.onSaveInstanceState(outState);
     }
 }
