@@ -85,6 +85,72 @@ public class webservice {
         return resultJSONObj;
     }
 
+    // get a json array by ws URL
+    public static JSONArray requestWebServiceArray(String serviceUrl) throws IOException, JSONException {
+        disableConnectionReuseIfNecessary();
+
+        HttpURLConnection urlConnection = null;
+        JSONArray resultJSONArray = null;
+        int statusCode;
+        String exceptionJSON = "{%s:%s}";
+        String responseFromWS = "";
+
+        try {
+            // create connection
+            URL urlToRequest = new URL(serviceUrl);
+            urlConnection = (HttpURLConnection)urlToRequest.openConnection();
+            // set content type to JSON
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept", "application/json");
+            Log.d("SmartERDebug", urlConnection.getHeaderField("Content-Type"));
+            // handle issues
+            statusCode = urlConnection.getResponseCode();
+
+            // handle different web service response status
+            switch (statusCode) {
+                case HttpURLConnection.HTTP_UNAUTHORIZED:
+                    resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_401));
+                    break;
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_404));
+                    break;
+                case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                    resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_500));
+                    break;
+                case HttpURLConnection.HTTP_OK:
+                    // get response stream from web service
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // put the stream content into string
+                    responseFromWS = getResponseText(in);
+                    // create result Json from the content string
+                    resultJSONArray = new JSONArray(responseFromWS);
+                    break;
+                default:
+                    break;
+            }
+        } catch (MalformedURLException e) {
+            // URL is invalid
+            throw e;
+        } catch (SocketTimeoutException e) {
+            // data retrieval or connection timed out
+            throw e;
+        } catch (IOException e) {
+            // could not read response body
+            // (could not create input stream)
+            throw e;
+        } catch (JSONException e) {
+            // response body is no valid JSON string
+            throw e;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        return resultJSONArray;
+    }
+
     // make a POST http request to a web service
     public static String postWebService(String serviceUrl, JSONObject jsonParam) throws IOException {
         // response result

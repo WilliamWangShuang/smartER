@@ -2,12 +2,16 @@ package smartER.webservice;
 
 import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SmartERUserWebservice {
     // get profile of current login user
@@ -23,8 +27,33 @@ public class SmartERUserWebservice {
         return jsonObject;
     }
 
+    // get profile of all users
+    public static List<UserProfile> findAllUsers() throws IOException, JSONException, ParseException {
+        List<UserProfile> users = new ArrayList<>();
+
+        // ws query result object
+        JSONArray jsonArray = new JSONArray();
+        try {
+            jsonArray = webservice.requestWebServiceArray(Constant.FIND_ALL_USERS);
+
+            // construct return list
+            int position = 0;
+            while (position < jsonArray.length()) {
+                JSONObject jsonObj = jsonArray.getJSONObject(position);
+                UserProfile userProfile = new UserProfile(jsonObj);
+                users.add(userProfile);
+                position ++;
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+
+        //return result
+        return users;
+    }
+
     // inner class working as entity class for user
-    public class UserProfile {
+    public static class UserProfile {
         // resident id
         private int resId;
         // address

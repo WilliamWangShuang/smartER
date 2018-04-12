@@ -17,7 +17,12 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 import smartER.webservice.MapWebservice;
+import smartER.webservice.SmartERUserWebservice;
 
 public class MapFragment extends Fragment {
     View vMapFragment;
@@ -42,11 +47,13 @@ public class MapFragment extends Fragment {
         mapFragmentFactorial.execute();
     }
 
-    private class MapFragmentFactorial extends AsyncTask<Void, Void, LatLng> {
+    private class MapFragmentFactorial extends AsyncTask<Void, Void, List<LatLng>> {
         Bundle savedInstanceState = null;
         MapView mMapView = null;
         LatLng myLocation = null;
+        List<LatLng> latLngList = null;
         MapboxMap mMapboxMap = null;
+        List<SmartERUserWebservice.UserProfile> users = null;
 
         // constructor
         public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState){
@@ -61,18 +68,21 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        protected LatLng doInBackground(Void... params) {
+        protected List<LatLng> doInBackground(Void... params) {
             Log.d("SmartERDebug","****Set map****");
 
-            LatLng result = new LatLng();
-            // TODO: my address - test purpose
-            String address = "14 Brixton ave,Eltham North,VIC";
-            String postcode = "3095";
+            List<LatLng> result = new ArrayList<>();
+
             try {
-                result = MapWebservice.getLatLngByAddress(address, postcode);
+                // call ws to get all users
+                users = SmartERUserWebservice.findAllUsers();
+                // call ws to generate all Latlng info for all users.
+                result = MapWebservice.getLatLngByAddress(users);
             } catch (IOException e) {
                 Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
             } catch (JSONException e) {
+                Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
+            } catch (ParseException e) {
                 Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
             }
 
@@ -80,8 +90,13 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(LatLng result) {
-            myLocation = result;
+        protected void onPostExecute(List<LatLng> result) {
+            // TODO: get my location
+            myLocation = new LatLng();
+            myLocation.setLatitude(-37.87649);
+            myLocation.setLongitude(145.04543);
+
+            latLngList = result;
 
             // synchronize map view
             mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -89,18 +104,23 @@ public class MapFragment extends Fragment {
                 public void onMapReady(MapboxMap mapboxMap) {
                     mMapboxMap = mapboxMap;
                     mMapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 11));
-                    addMarker(mMapboxMap);
+                    // add makers for all residents
+                    addMarker(mMapboxMap, latLngList);
                 }
             });
         }
 
         // add maker on map
-        private void addMarker(MapboxMap mapboxMap) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(myLocation);
-            markerOptions.title("Test Data");
-            markerOptions.snippet("Welcome!");
-            mapboxMap.addMarker(markerOptions);
+        private void addMarker(MapboxMap mapboxMap, List<LatLng> resPositions) {
+            // set makers for all resident
+            for (LatLng latLng : resPositions) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title("Test Data");
+                markerOptions.snippet("Welcome!");
+                mapboxMap.addMarker(markerOptions);
+            }
+
         }
     }
 
