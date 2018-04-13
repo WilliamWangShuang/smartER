@@ -97,6 +97,10 @@ public class MapFragment extends Fragment {
             myLocation.setLongitude(145.04543);
 
             latLngList = result;
+            Log.d("SmartERDebug", "*****" + latLngList.size());
+            for (LatLng l : latLngList) {
+                Log.d("SmartERDebug", "" + l.getLatitude() + l.getLongitude());
+            }
 
             // synchronize map view
             mMapView.getMapAsync(new OnMapReadyCallback() {

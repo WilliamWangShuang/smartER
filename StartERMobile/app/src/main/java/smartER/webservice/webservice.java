@@ -103,7 +103,6 @@ public class webservice {
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("Accept", "application/json");
-            Log.d("SmartERDebug", urlConnection.getHeaderField("Content-Type"));
             // handle issues
             statusCode = urlConnection.getResponseCode();
 

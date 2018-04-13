@@ -1,5 +1,7 @@
 package smartER.webservice;
 
+import android.util.Log;
+
 import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 
@@ -41,6 +43,7 @@ public class SmartERUserWebservice {
             while (position < jsonArray.length()) {
                 JSONObject jsonObj = jsonArray.getJSONObject(position);
                 UserProfile userProfile = new UserProfile(jsonObj);
+                Log.d("SmartERDebug", "&&&&&&" + userProfile.getAddress());
                 users.add(userProfile);
                 position ++;
             }

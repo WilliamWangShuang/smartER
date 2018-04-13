@@ -1,5 +1,7 @@
 package smartER.webservice;
 
+import android.util.Log;
+
 import com.example.william.starter_mobile.Constant;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONArray;
@@ -19,7 +21,7 @@ public class MapWebservice {
         // encode address and generate ws request URL
         StringBuilder urlBuilder = new StringBuilder(Constant.MAP_WS_MULTIPLE_LOCATION_URL);
         for (SmartERUserWebservice.UserProfile userProfile : users){
-            userProfile.setAddress(userProfile.getAddress().replaceAll(" ", "%20"));
+            userProfile.setAddress(userProfile.getAddress().replaceAll(" ", "%20").replaceAll("/", "%2F"));
             urlBuilder.append(Constant.MAP_WS_LOCATION_URL_PARAM);
             urlBuilder.append(userProfile.getAddress());
             urlBuilder.append(Constant.MAP_WS_POSTCODE_URL_PARAM);
