@@ -119,8 +119,6 @@ public class SmartERDbUtility {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         // create table contract
         SmartERContract.ApplianceUsage applianceUsage = new SmartERContract.ApplianceUsage();
-        // date formatter to covert current date to string so that can be used in SQLite query
-        DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
         // SQL string
         String queryString = "SELECT " + applianceUsage.COLUMN_NAME_FRIDGEUSAGE  + "," +
                 applianceUsage.COLUMN_NAME_ACUSAGE + "," +

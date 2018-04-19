@@ -19,7 +19,9 @@ import org.json.JSONObject;
 import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +42,42 @@ public class SmartERUsageWebservice {
         SyncAllRecordFactorial syncAllRecordFactorial = new SyncAllRecordFactorial();
         syncAllRecordFactorial.execute();
     }
+
+    // call RESTful web serice to get daily total usage or hourly usages for all residents for a specific date
+    public static List<JSONObject> getDailyTotalUsageOrHourlyUsagesForAllResident(String viewType, Date date) throws IOException, JSONException {
+        List<JSONObject> result = new ArrayList<>();
+
+        // convert date to URL param string
+        DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
+        String paramDate = df.format(date);
+        // construct ws URL
+        StringBuilder urlBuilder = new StringBuilder(Constant.MAP_WS_CHOOSE_VIEW);
+        if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
+            urlBuilder.append(paramDate);
+            urlBuilder.append("/");
+            urlBuilder.append(Constant.MAP_VIEW_HOURLY);
+        } else if (Constant.MAP_VIEW_DAILY.equals(viewType)) {
+            urlBuilder.append(paramDate);
+            urlBuilder.append("/");
+            urlBuilder.append(Constant.MAP_VIEW_DAILY);
+        } else {
+            urlBuilder.append(paramDate);
+            urlBuilder.append("/");
+            urlBuilder.append(Constant.MAP_VIEW_DAILY);
+        }
+        // call webservice to get reuslt from server
+        JSONArray jsonArray = webservice.requestWebServiceArray(urlBuilder.toString());
+        // construct return list
+        int position = 0;
+        while (position < jsonArray.length()) {
+            JSONObject jsonObj = jsonArray.getJSONObject(position);
+            result.add(jsonObj);
+            position ++;
+        }
+
+        return result;
+    }
+
 
     // parse JSONObject for one usage data
     private JSONObject parseJsonObjForOneData(Context context) throws IOException, JSONException {
@@ -150,7 +188,7 @@ public class SmartERUsageWebservice {
         };
     }
 
-    // async factory class to do post task which is for sync one record to server db
+    // async factory class to do post task which is for sync all record to server db
     private class SyncAllRecordFactorial extends AsyncTask<Void, Void, String> {
 
         @Override

@@ -9,6 +9,7 @@ public class Constant {
     public static String CREATE_MULTIPLE_DATA_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/createMulitple";
     public static String MAP_WS_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp&thumbMaps=false&location=";
     public static String MAP_WS_MULTIPLE_LOCATION_URL = "http://www.mapquestapi.com/geocoding/v1/batch?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp";
+    public static String MAP_WS_CHOOSE_VIEW = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findDailyOrHourlyUsageForAll/";
     public static String MAP_WS_LOCATION_URL_PARAM = "&location=";
     public static String MAP_WS_POSTCODE_URL_PARAM = "&postalCode=";
 
@@ -19,6 +20,10 @@ public class Constant {
     public static String DATE_FORMAT = "yyyy-MM-dd";
     public static String SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
     public static String SUCCESS_MSG = "Success";
+
+    // map view
+    public static String MAP_VIEW_HOURLY = "hourly";
+    public static String MAP_VIEW_DAILY = "daily";
 
     // json key for weather ws
     public static String WS_KEY_WEATHER_MAIN = "main";

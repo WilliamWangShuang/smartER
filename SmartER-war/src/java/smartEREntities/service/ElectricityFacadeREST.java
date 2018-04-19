@@ -440,8 +440,6 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
                     JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
                     jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(el.getResid().getResid()));
                     jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(el.getTotalUsage()));
-                    jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Integer.toString(el.getTemperature()));
-                    jObjectBuilder.add(Constant.JSON_KEY_DATE, usagedate);
                     jObjectBuilder.add(Constant.JSON_KEY_TIME, Integer.toString(el.getUsagehour()));
                     arrayBuilder.add(jObjectBuilder.build());
                 }

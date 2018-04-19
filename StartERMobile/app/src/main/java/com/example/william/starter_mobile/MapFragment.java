@@ -16,12 +16,18 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import smartER.webservice.MapWebservice;
+import smartER.webservice.SmartERUsageWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
 public class MapFragment extends Fragment {
@@ -54,12 +60,12 @@ public class MapFragment extends Fragment {
         List<LatLng> latLngList = null;
         MapboxMap mMapboxMap = null;
         List<SmartERUserWebservice.UserProfile> users = null;
+        List<JSONObject> dataJson = null;
 
         // constructor
         public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState){
             this.savedInstanceState = savedInstanceState;
             this.mMapView = mMapView;
-            //this.mMapView.onCreate(savedInstanceState);
         }
 
         @Override
@@ -76,8 +82,16 @@ public class MapFragment extends Fragment {
             try {
                 // call ws to get all users
                 users = SmartERUserWebservice.findAllUsers();
+                // get default view usage json data
+                // TODO: should be the date before current date, here for demo purpose, set 2018-3-3
+                //Calendar cal = Calendar.getInstance();
+                //cal.add(Calendar.HOUR_OF_DAY, -24);
+                //Date date = cal.getTime();
+                Calendar cal = new GregorianCalendar(2018,2,3);
+                Date date = cal.getTime();
+                dataJson = SmartERUsageWebservice.getDailyTotalUsageOrHourlyUsagesForAllResident(Constant.MAP_VIEW_DAILY, date);
                 // call ws to generate all Latlng info for all users.
-                result = MapWebservice.getLatLngByAddress(users);
+                result = MapWebservice.getLatLngByAddress(users, dataJson);
             } catch (IOException e) {
                 Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
             } catch (JSONException e) {
@@ -122,6 +136,7 @@ public class MapFragment extends Fragment {
                 markerOptions.position(latLng);
                 markerOptions.title("Test Data");
                 markerOptions.snippet("Welcome!");
+
                 mapboxMap.addMarker(markerOptions);
             }
 

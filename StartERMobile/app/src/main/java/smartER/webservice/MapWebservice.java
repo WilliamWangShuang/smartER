@@ -16,7 +16,7 @@ public class MapWebservice {
     private static JSONObject mapInfoByWS = null;
 
     // get latitude by address
-    public static List<LatLng> getLatLngByAddress(List<SmartERUserWebservice.UserProfile> users) throws IOException, JSONException {
+    public static List<LatLng> getLatLngByAddress(List<SmartERUserWebservice.UserProfile> users, List<JSONObject> usageDataJsons) throws IOException, JSONException {
         List<LatLng> latLngList = new ArrayList<LatLng>();
         // encode address and generate ws request URL
         StringBuilder urlBuilder = new StringBuilder(Constant.MAP_WS_MULTIPLE_LOCATION_URL);
@@ -50,5 +50,10 @@ public class MapWebservice {
         }
 
         return latLngList;
+    }
+
+    private class ResidentMapEntity {
+        private List<LatLng> latLngList;
+        // TODO: done this shit!
     }
 }
