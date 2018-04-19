@@ -422,6 +422,69 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
         return result;
     }
     
+    @GET
+    @Path("findDailyOrHourlyUsageForAll/{usagedate}/{viewType}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Object findDailyOrHourlyUsageForAllResidents(@PathParam("usagedate") String usagedate, @PathParam("viewType") String viewType) throws Exception {
+        Object result = null;
+        try {
+            // Get usage list by resid and date
+            List<Electricity> usageList = SmartERTools.getUsageByDateForAllResident(usagedate, em);
+            
+            if (Constant.VIEW_HOURLY.equals(viewType)) {
+                // Create JSON builder
+                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                // Loop usage list and construct json objects
+                for (Electricity el :usageList) {
+                    // Create JSON object
+                    JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+                    jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(el.getResid().getResid()));
+                    jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(el.getTotalUsage()));
+                    jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Integer.toString(el.getTemperature()));
+                    jObjectBuilder.add(Constant.JSON_KEY_DATE, usagedate);
+                    jObjectBuilder.add(Constant.JSON_KEY_TIME, Integer.toString(el.getUsagehour()));
+                    arrayBuilder.add(jObjectBuilder.build());
+                }
+                // Return result list
+                result = arrayBuilder.build();
+            } else if (Constant.VIEW_DAILY.equals(viewType)) {
+                // Create JSON builder
+                JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                // variable sum usage of 24H and resident id
+                double sumUsage = 0.0;
+                int resid = usageList.get(0).getResid().getResid();
+                for (Electricity el :usageList) {
+                    // set resid
+                    if (resid != el.getResid().getResid()) {
+                        // construct daily usage JSON object for the current resident
+                        JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+                        jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
+                        jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(SmartERTools.round(sumUsage, 2)));
+                        arrayBuilder.add(jObjectBuilder.build());
+                        // reset sum usage of 24H and resident Id for new resident
+                        resid = el.getResid().getResid();
+                        System.out.println("*****resid:" + resid);
+                        sumUsage = 0.0;
+                    }
+                    // Add this hour usage to sum usage 
+                    sumUsage += el.getTotalUsage();
+                }
+                
+                // add the last resident data in JSON array
+                JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+                jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
+                jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(SmartERTools.round(sumUsage, 2)));
+                arrayBuilder.add(jObjectBuilder.build());
+                
+                // Create JSON object
+                result = arrayBuilder.build();
+            } 
+        } catch (Exception ex) {
+            throw ex;
+        } 
+        return result;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

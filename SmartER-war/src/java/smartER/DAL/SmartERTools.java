@@ -58,6 +58,24 @@ public class SmartERTools {
         return usageList;
     }
 
+    // Find total usage for all residents by date
+    public static List<Electricity> getUsageByDateForAllResident(String usagedate, EntityManager em) throws Exception {
+        List<Electricity> usageList = null;
+        try {
+            // Convert param usagedate to Date Type
+            Date paramDate = new SimpleDateFormat(Constant.DATE_FORMAT).parse(usagedate);
+            // Create query to find all usage data on the specific date for this resident
+            Query query = em.createNamedQuery(Electricity.GET_BY_DATE);
+            // Set parameters for query
+            query.setParameter("usagedate", paramDate);
+            // Execute query
+            usageList = query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return usageList;
+    }
+    
     // Round a double to 2 decimal.
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
