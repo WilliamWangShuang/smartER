@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapquest.mapping.maps.OnMapReadyCallback;
 import com.mapquest.mapping.maps.MapboxMap;
 import com.mapquest.mapping.maps.MapView;
@@ -25,6 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUsageWebservice;
@@ -53,11 +58,11 @@ public class MapFragment extends Fragment {
         mapFragmentFactorial.execute();
     }
 
-    private class MapFragmentFactorial extends AsyncTask<Void, Void, List<LatLng>> {
+    private class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.ResidentMapEntity> {
         Bundle savedInstanceState = null;
         MapView mMapView = null;
         LatLng myLocation = null;
-        List<LatLng> latLngList = null;
+        MapWebservice.ResidentMapEntity residentInfo = null;
         MapboxMap mMapboxMap = null;
         List<SmartERUserWebservice.UserProfile> users = null;
         List<JSONObject> dataJson = null;
@@ -74,10 +79,10 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        protected List<LatLng> doInBackground(Void... params) {
+        protected MapWebservice.ResidentMapEntity doInBackground(Void... params) {
             Log.d("SmartERDebug","****Set map****");
 
-            List<LatLng> result = new ArrayList<>();
+            MapWebservice.ResidentMapEntity result = null;
 
             try {
                 // call ws to get all users
@@ -90,8 +95,9 @@ public class MapFragment extends Fragment {
                 Calendar cal = new GregorianCalendar(2018,2,3);
                 Date date = cal.getTime();
                 dataJson = SmartERUsageWebservice.getDailyTotalUsageOrHourlyUsagesForAllResident(Constant.MAP_VIEW_DAILY, date);
-                // call ws to generate all Latlng info for all users.
-                result = MapWebservice.getLatLngByAddress(users, dataJson);
+                Log.d("SmartERDebug", "dataJson size:" + dataJson.size());
+                // call ws to generate all Latlng and usage(hourly / daily) info for all users.
+                result = MapWebservice.getLatLngAndUsageByAddress(users, dataJson, Constant.MAP_VIEW_DAILY);
             } catch (IOException e) {
                 Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
             } catch (JSONException e) {
@@ -104,15 +110,16 @@ public class MapFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<LatLng> result) {
+        protected void onPostExecute(MapWebservice.ResidentMapEntity result) {
             // TODO: get my location
             myLocation = new LatLng();
             myLocation.setLatitude(-37.87649);
             myLocation.setLongitude(145.04543);
 
-            latLngList = result;
-            Log.d("SmartERDebug", "*****" + latLngList.size());
-            for (LatLng l : latLngList) {
+            Log.d("SmartERDebug", "result size:" + result.getResidentInfoList().size());
+            residentInfo = result;
+            Log.d("SmartERDebug", "*****" + residentInfo.getLatLngMap().entrySet().size());
+            for (LatLng l : residentInfo.getLatLngMap().values()) {
                 Log.d("SmartERDebug", "" + l.getLatitude() + l.getLongitude());
             }
 
@@ -123,20 +130,34 @@ public class MapFragment extends Fragment {
                     mMapboxMap = mapboxMap;
                     mMapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 11));
                     // add makers for all residents
-                    addMarker(mMapboxMap, latLngList);
+                    addMarker(mMapboxMap, residentInfo, Constant.MAP_VIEW_DAILY);
                 }
             });
         }
 
         // add maker on map
-        private void addMarker(MapboxMap mapboxMap, List<LatLng> resPositions) {
+        private void addMarker(MapboxMap mapboxMap, MapWebservice.ResidentMapEntity resInfo, String viewType) {
+            // Create an Icon object for the marker to use
+            IconFactory iconFactory = IconFactory.getInstance(SmartERMobileUtility.getmContext());
+            Icon iconGreen = iconFactory.fromResource(R.drawable.marker_green);
+            Icon iconRed = iconFactory.fromResource(R.drawable.marker_red);
             // set makers for all resident
-            for (LatLng latLng : resPositions) {
+            for (Map.Entry<Integer, LatLng> entity : resInfo.getLatLngMap().entrySet()) {
                 MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Test Data");
-                markerOptions.snippet("Welcome!");
-
+                markerOptions.position(entity.getValue());
+                MapWebservice.ResidentUsageInfoEntity residentInfo = SmartERMobileUtility.getReidentBasedOnLatLngMapKey(entity.getKey(), resInfo.getResidentInfoList());
+                // if resident obj is null. it means for this resident, no usage data found matching the given time
+                double totalUsage = residentInfo == null ? 0 : residentInfo.getTotalUsage();
+                markerOptions.title("");
+                markerOptions.snippet("Total Usage:" + (totalUsage == 0 ? "N.A." : totalUsage));
+                // set marker color based on view type and usage
+                if(Constant.MAP_VIEW_DAILY.equals(viewType)) {
+                    markerOptions.setIcon(totalUsage > 21 ? iconRed : iconGreen);
+                } else if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
+                    markerOptions.setIcon(totalUsage > 1.5 ? iconRed : iconGreen);
+                } else {
+                    markerOptions.setIcon(totalUsage > 21 ? iconRed : iconGreen);
+                }
                 mapboxMap.addMarker(markerOptions);
             }
 

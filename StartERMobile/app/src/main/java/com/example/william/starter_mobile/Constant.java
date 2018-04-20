@@ -55,4 +55,6 @@ public class Constant {
     public static String WS_KEY_MAP_LATLNG = "latLng";
     public static String WS_KEY__MAP_LAT = "lat";
     public static String WS_KEY_MAP_LNG = "lng";
+    public static String WS_KEY_MAP_TOTAL_USAGE = "usage";
+    public static String WS_KEY_MAP_TIME = "time";
 }

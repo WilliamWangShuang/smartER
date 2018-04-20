@@ -83,7 +83,7 @@ public class SmartERUserWebservice {
         // constructor with Json param
         public UserProfile(JSONObject jsonObject) throws JSONException, ParseException {
             // set value to attributes from json object
-            resId = SmartERMobileUtility.getResId();
+            resId = jsonObject.getInt(Constant.WS_KEY_RESID);
             address = jsonObject.getString(Constant.WS_KEY_ADDRESS);
             Date date1=new SimpleDateFormat(Constant.DATE_FORMAT).parse(jsonObject.getString(Constant.WS_KEY_DOB).substring(0, 9));
             dob = date1;
@@ -97,6 +97,11 @@ public class SmartERUserWebservice {
         }
 
         // getters and setters
+
+        public int getResId() {
+            return resId;
+        }
+
         public String getAddress() {
             return address;
         }

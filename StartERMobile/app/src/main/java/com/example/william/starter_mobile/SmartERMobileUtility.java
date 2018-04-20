@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 
 import smartER.db.SmartERDbHelper;
+import smartER.webservice.MapWebservice;
 
 public class SmartERMobileUtility extends Application {
 
@@ -143,5 +145,18 @@ public class SmartERMobileUtility extends Application {
 
     public static void setSyncOneRecordResult(String syncOneRecordResult) {
         SmartERMobileUtility.syncOneRecordResult = syncOneRecordResult;
+    }
+
+    // get the resident usage info object based on latlng key in map
+    public static MapWebservice.ResidentUsageInfoEntity getReidentBasedOnLatLngMapKey(int resid, List<MapWebservice.ResidentUsageInfoEntity> residentInfoList) {
+        MapWebservice.ResidentUsageInfoEntity resident = null;
+        for (MapWebservice.ResidentUsageInfoEntity residentUsageInfoEntity : residentInfoList) {
+            if (resid == residentUsageInfoEntity.getResId()) {
+                resident = residentUsageInfoEntity;
+                break;
+            }
+        }
+
+        return resident;
     }
 }
