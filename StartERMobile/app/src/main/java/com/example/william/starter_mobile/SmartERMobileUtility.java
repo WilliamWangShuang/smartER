@@ -5,6 +5,12 @@ import android.content.Context;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +19,9 @@ import java.util.List;
 import java.util.Random;
 
 import smartER.db.SmartERDbHelper;
+import smartER.db.SmartERDbUtility;
 import smartER.webservice.MapWebservice;
+import smartER.webservice.SmartERUserWebservice;
 
 public class SmartERMobileUtility extends Application {
 
@@ -115,13 +123,13 @@ public class SmartERMobileUtility extends Application {
 
         // Generate a washing machine start work time
         SmartERMobileUtility.setWsStartWorkTime(SmartERMobileUtility.getRandomIntegerNumber(6, 18));
-        // Generate air conditioner work time
-        int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 24);
+
         int workCount = 0;
         // air conditioner can only work between 9am and 11pm. and up to work 10 hrs.
-        while (9 <= generatedWorkTime && generatedWorkTime <= 23 && workCount < 10) {
-            if(!workTime.contains(generatedWorkTime)) {
-                generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
+        while (workCount < 10) {
+            // Generate air conditioner work time
+            int generatedWorkTime = SmartERMobileUtility.getRandomIntegerNumber(0, 25);
+            if(9 <= generatedWorkTime && generatedWorkTime <= 23  && !workTime.contains(generatedWorkTime)) {
                 workTime.add(generatedWorkTime);
                 workCount ++;
             }
@@ -158,5 +166,57 @@ public class SmartERMobileUtility extends Application {
         }
 
         return resident;
+    }
+
+    // parse JSONObject for one usage data
+    public static JSONObject parseJsonObjForOneData() throws IOException, JSONException {
+        SmartERDbUtility smartERDbUtility;
+        JSONObject result = new JSONObject();
+        // get user profile json object
+        JSONObject userProfileJsonObject = SmartERUserWebservice.findCurrentUserById();
+
+        // get appliance usage from SQLite db
+        smartERDbUtility = new SmartERDbUtility(getmContext());
+        SmartERDbUtility.AppUsageEntity appUsageEntity = smartERDbUtility.getCurrentHourAppUsage(SmartERMobileUtility.getCurrentHour(), SmartERMobileUtility.getResId());
+
+        // parse result Json object
+        if (appUsageEntity != null) {
+            result.put(Constant.WS_KEY_AC_USAGE, appUsageEntity.getAcUsage());
+            result.put(Constant.WS_KEY_FRIDGE_USAGE, appUsageEntity.getFirdgeUsage());
+            result.put(Constant.WS_KEY_RESID, userProfileJsonObject);
+            result.put(Constant.WS_KEY_TEMPERATURE, (int) SmartERMobileUtility.getCurrentTemp());
+            SimpleDateFormat df = new SimpleDateFormat(Constant.SERVER_DATE_FORMAT);
+            result.put(Constant.WS_KEY_USAGE_DATE, df.format(new Date()));
+            result.put(Constant.WS_KEY_USAGE_HOUR, SmartERMobileUtility.getCurrentHour());
+            result.put(Constant.WS_KEY_WM_USAGE, appUsageEntity.getWmUsage());
+        }
+
+        return result;
+    }
+
+    // parse Json object for all data in SQLite
+    public static JSONArray parseJsonObjForAllData() throws IOException, JSONException {
+        JSONArray result = new JSONArray();
+        // get user profile json object
+        JSONObject userProfileJsonObject = SmartERUserWebservice.findCurrentUserById();
+
+        // get SQLite data helper
+        SmartERDbUtility smartERDbUtility = new SmartERDbUtility(getmContext());
+        // get all data in SQLite
+        List<SmartERDbUtility.AppUsageEntity> appUsageList = smartERDbUtility.getAllExistData();
+        for (SmartERDbUtility.AppUsageEntity entity : appUsageList) {
+            JSONObject temp = new JSONObject();
+            temp.put(Constant.WS_KEY_AC_USAGE, entity.getAcUsage());
+            temp.put(Constant.WS_KEY_FRIDGE_USAGE, entity.getFirdgeUsage());
+            temp.put(Constant.WS_KEY_RESID, userProfileJsonObject);
+            temp.put(Constant.WS_KEY_TEMPERATURE, (int)SmartERMobileUtility.getCurrentTemp());
+            SimpleDateFormat df =  new SimpleDateFormat(Constant.SERVER_DATE_FORMAT);
+            temp.put(Constant.WS_KEY_USAGE_DATE, df.format(new Date()));
+            temp.put(Constant.WS_KEY_USAGE_HOUR, SmartERMobileUtility.getCurrentHour());
+            temp.put(Constant.WS_KEY_WM_USAGE, entity.getWmUsage());
+            result.put(temp);
+        }
+
+        return result;
     }
 }
