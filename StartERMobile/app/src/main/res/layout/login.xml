@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/big_title_login"
+            android:textColor="@color/mapbox_blue"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:fontFamily="@string/style_satellite"
+            android:textSize="24pt"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in_title"
+            android:textColor="@color/mapbox_blue"
+            android:textStyle="bold"
+            android:fontFamily="@string/style_satellite"
+            android:textSize="20pt"/>
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+            <TableRow>
+                <EditText
+                    android:id="@+id/login_username"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_username_hint" />
+            </TableRow>
+
+            <TableRow>
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_pwd_hint"
+                    android:inputType="textPassword" />
+            </TableRow>
+
+            <TableRow>
+                <Button android:id="@+id/btn_login"
+                    android:layout_span="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FF9900"
+                    android:text="@string/sign_in_title" />
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

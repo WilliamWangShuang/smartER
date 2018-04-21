@@ -13,6 +13,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import smartER.db.SmartERDbUtility;
+import smartER.webservice.WeatherWebservice;
 import smartER.webservice.webservice;
 
 // async factory class to do post task which is for sync all record to server db
@@ -29,6 +30,10 @@ public class SyncAllRecordFactorial extends AsyncTask<Void, Void, String> {
         String result = "";
 
         try {
+            // get current temperature
+            double currTemp = WeatherWebservice.getCurrentTemperature();
+            // update global variable - currentTemp
+            SmartERMobileUtility.setCurrentTemp(currTemp);
             // parse POST Json
             JSONArray jsonParam = SmartERMobileUtility.parseJsonObjForAllData();
             Log.d("SmartERDebug", "parsed json to post:" + jsonParam.toString());

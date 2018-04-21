@@ -7,29 +7,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 
-import smartER.webservice.Receivers.*;
+import smartER.webservice.Receivers.AppDataGenerator;
+import smartER.webservice.Receivers.CurrentTempReceiver;
+import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
+import smartER.webservice.Receivers.Sync24HourUsageDateReceiver;
 import smartER.webservice.SmartERUsageWebservice;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    // applicance data generator receiver
+    private AppDataGenerator appDataGenerator;
+    // context based value reseter
+    private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
+    // sync 24-hour data to server receiver
+    private Sync24HourUsageDateReceiver sync24HourUsageDateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,23 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        // keep context
+        SmartERMobileUtility.setmContext(this);
+        // TODO: should be put in login logic
+        // set resident ID after login
+        SmartERMobileUtility.setResId(3);
+
+        // Initial context value for those which are used to work as the base of generating apps usage
+        SmartERMobileUtility.resetCtxBasedValue();
+        // Set receiver to generate context based data for generating app usage data every 24 hours
+        resetCtxBasedValuesReceiver = new ResetCtxBasedValuesReceiver(this);
+        // Set applicance generated data every hour
+        appDataGenerator = new AppDataGenerator(this);
+        // Set sync 24-hour data receiver
+        sync24HourUsageDateReceiver  = new Sync24HourUsageDateReceiver(this);
+
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

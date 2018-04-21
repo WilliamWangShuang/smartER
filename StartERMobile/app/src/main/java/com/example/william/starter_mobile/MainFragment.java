@@ -19,18 +19,13 @@ import smartER.webservice.Receivers.Sync24HourUsageDateReceiver;
 import smartER.webservice.SmartERUsageWebservice;
 
 public class MainFragment extends Fragment {
-    View vMainFragment;
-    // current temperature receiver
-    private CurrentTempReceiver currentTempReceiver;
-    // applicance data generator receiver
-    private AppDataGenerator appDataGenerator;
-    // context based value reseter
-    private ResetCtxBasedValuesReceiver resetCtxBasedValuesReceiver;
-    // sync 24-hour data to server receiver
-    private Sync24HourUsageDateReceiver sync24HourUsageDateReceiver;
+    private View vMainFragment;
     // SmartERUsage webservice
     private SmartERUsageWebservice smartERUsageWebservice;
+    // textView for temperature
     private TextView tvTemp;
+    // current temperature receiver
+    private CurrentTempReceiver currentTempReceiver;
 
     @Nullable
     @Override
@@ -43,38 +38,22 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // get view of current temperature
-        tvTemp = getActivity().findViewById(R.id.tvTemp);
-        // keep context
-        SmartERMobileUtility.setmContext(getActivity());
-        // TODO: should be put in login logic
-        // set resident ID after login
-        SmartERMobileUtility.setResId(3);
-
-        // Initial context value for those which are used to work as the base of generating apps usage
-        SmartERMobileUtility.resetCtxBasedValue();
-        // Set background thread to get update temperature
-        currentTempReceiver = new CurrentTempReceiver(getActivity());
-        // Set receiver to generate context based data for generating app usage data every 24 hours
-        resetCtxBasedValuesReceiver = new ResetCtxBasedValuesReceiver(getActivity());
-        // Set applicance generated data every hour
-        appDataGenerator = new AppDataGenerator(getActivity());
-        // Set sync 24-hour data receiver
-        sync24HourUsageDateReceiver  = new Sync24HourUsageDateReceiver(getActivity());
         // initial SmartERUsage ws
         smartERUsageWebservice = new SmartERUsageWebservice();
 
+        // get view of current temperature
+        tvTemp = getActivity().findViewById(R.id.tvTemp);
+
+        // Set background thread to get update temperature
+        currentTempReceiver = new CurrentTempReceiver(getActivity());
         // define broadReceiver onReceive action to update view of currenet temperature timely
         BroadcastReceiver broadcastReceiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 tvTemp.setText(intent.getExtras().getString("currTemp"));
-                // update global variable - currentTemp
-                SmartERMobileUtility.setCurrentTemp(Double.parseDouble(intent.getExtras().getString("currTemp")));
             }
         };
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
-
         // register click event to button sycn_one_data
         Button btnSyncOneData=(Button)getActivity().findViewById(R.id.btn_syncOneData);
         //registering with onclicklistener
