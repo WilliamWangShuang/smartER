@@ -67,6 +67,7 @@ public class SmartERUsageWebservice {
             urlBuilder.append("/");
             urlBuilder.append(Constant.MAP_VIEW_DAILY);
         }
+        Log.d("SmartERDebug", "ws url for getting usage based on view type on map view:" + urlBuilder.toString());
         // call webservice to get reuslt from server
         JSONArray jsonArray = webservice.requestWebServiceArray(urlBuilder.toString());
         // construct return list

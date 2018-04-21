@@ -9,6 +9,7 @@ import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -39,11 +40,13 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
     MapboxMap mMapboxMap = null;
     List<SmartERUserWebservice.UserProfile> users = null;
     List<JSONObject> dataJson = null;
+    String viewType = "daily";
 
     // constructor
-    public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState){
+    public MapFragmentFactorial(MapView mMapView, Bundle savedInstanceState, String viewType){
         this.savedInstanceState = savedInstanceState;
         this.mMapView = mMapView;
+        this.viewType = viewType;
     }
 
     @Override
@@ -67,10 +70,10 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
             //Date date = cal.getTime();
             Calendar cal = new GregorianCalendar(2018,2,3);
             Date date = cal.getTime();
-            dataJson = SmartERUsageWebservice.getDailyTotalUsageOrHourlyUsagesForAllResident(Constant.MAP_VIEW_DAILY, date);
+            dataJson = SmartERUsageWebservice.getDailyTotalUsageOrHourlyUsagesForAllResident(viewType, date);
             Log.d("SmartERDebug", "dataJson size:" + dataJson.size());
             // call ws to generate all Latlng and usage(hourly / daily) info for all users.
-            result = MapWebservice.getLatLngAndUsageByAddress(users, dataJson, Constant.MAP_VIEW_DAILY);
+            result = MapWebservice.getLatLngAndUsageByAddress(users, dataJson, viewType);
         } catch (IOException e) {
             Log.e("SmertERDebug", SmartERMobileUtility.getExceptionInfo(e));
         } catch (JSONException e) {
@@ -102,8 +105,13 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
             public void onMapReady(MapboxMap mapboxMap) {
                 mMapboxMap = mapboxMap;
                 mMapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 11));
+                // remove all markers first
+                List<Marker> allMarkers = mMapboxMap.getMarkers();
+                for (Marker marker : allMarkers){
+                    mMapboxMap.removeMarker(marker);
+                }
                 // add makers for all residents
-                addMarker(mMapboxMap, residentInfo, Constant.MAP_VIEW_DAILY);
+                addMarker(mMapboxMap, residentInfo, viewType);
             }
         });
     }
@@ -122,13 +130,15 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
             // if resident obj is null. it means for this resident, no usage data found matching the given time
             double totalUsage = residentInfo == null ? 0 : residentInfo.getTotalUsage();
             markerOptions.title("");
-            markerOptions.snippet("Total Usage:" + (totalUsage == 0 ? "N.A." : totalUsage));
             // set marker color based on view type and usage
             if(Constant.MAP_VIEW_DAILY.equals(viewType)) {
+                markerOptions.snippet("Daily Total Usage:" + (totalUsage == 0 ? "N.A." : totalUsage));
                 markerOptions.setIcon(totalUsage > 21 ? iconRed : iconGreen);
             } else if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
+                markerOptions.snippet("Hourly Total Usage:" + (totalUsage == 0 ? "N.A." : totalUsage));
                 markerOptions.setIcon(totalUsage > 1.5 ? iconRed : iconGreen);
             } else {
+                markerOptions.snippet("Daily Total Usage:" + (totalUsage == 0 ? "N.A." : totalUsage));
                 markerOptions.setIcon(totalUsage > 21 ? iconRed : iconGreen);
             }
             mapboxMap.addMarker(markerOptions);

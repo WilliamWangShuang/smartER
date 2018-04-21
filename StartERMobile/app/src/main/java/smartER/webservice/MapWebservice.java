@@ -46,7 +46,6 @@ public class MapWebservice {
             // set latlng value
             latLng.setLatitude(jsonLatLng.getDouble(Constant.WS_KEY__MAP_LAT));
             latLng.setLongitude(jsonLatLng.getDouble(Constant.WS_KEY_MAP_LNG));
-            Log.d("SmartERDebug", "&&&&&&&&&:" + users.get(position).getResId() + " : " + latLng.getLatitude() + ":"+latLng.getLongitude());
             LatLngProviders.put(users.get(position).getResId(), latLng);
             position++;
         }

@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -36,7 +39,7 @@ import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUsageWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     View vMapFragment;
     private MapView mMapView;
     // my address geographical position
@@ -49,17 +52,38 @@ public class MapFragment extends Fragment {
         // create map view
         mMapView = (MapView)vMapFragment.findViewById(R.id.mapquestMapView);
         mMapView.onCreate(savedInstanceState);
+        // register listener to spinner
+        ((Spinner)vMapFragment.findViewById(R.id.spnnierMapViewType)).setOnItemSelectedListener(this);
         return vMapFragment;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // start map view asynchronically
-        MapFragmentFactorial mapFragmentFactorial = new MapFragmentFactorial(mMapView, savedInstanceState);
+        MapFragmentFactorial mapFragmentFactorial = new MapFragmentFactorial(mMapView, savedInstanceState, Constant.MAP_VIEW_DAILY);
         mapFragmentFactorial.execute();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapter, View v, int position, long id) {
+        // get view type from view
+        String viewType = adapter.getItemAtPosition(position).toString();
+        MapFragmentFactorial mapFragmentFactorial = null;
+        // change map view according to the view type selected
+        if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
+            mapFragmentFactorial = new MapFragmentFactorial(mMapView, null, Constant.MAP_VIEW_HOURLY);
+        } else if(Constant.MAP_VIEW_DAILY.equals(viewType)) {
+            mapFragmentFactorial = new MapFragmentFactorial(mMapView, null, Constant.MAP_VIEW_DAILY);
+        } else {
+            mapFragmentFactorial = new MapFragmentFactorial(mMapView, null, Constant.MAP_VIEW_DAILY);
+        }
+        mapFragmentFactorial.execute();
+    }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+
+    }
 
     @Override
     public void onResume() {
