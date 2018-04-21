@@ -27,21 +27,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sign_in_title"
-            android:textColor="@color/mapbox_blue"
+            android:textColor="#000000"
             android:textStyle="bold"
             android:fontFamily="@string/style_satellite"
-            android:textSize="20pt"/>
+            android:textSize="15pt"
+            android:paddingLeft="10dp"/>
 
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="1">
+            android:stretchColumns="1"
+            android:padding="10dp">
+
             <TableRow>
                 <EditText
                     android:id="@+id/login_username"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_username_hint" />
+                    android:hint="@string/login_username_hint"
+                    android:layout_column="1" />
             </TableRow>
 
             <TableRow>
@@ -50,7 +54,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_pwd_hint"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>

@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Credential.findAll", query = "SELECT c FROM Credential c")
     , @NamedQuery(name = "Credential.findByUsername", query = "SELECT c FROM Credential c WHERE c.username = :username")
     , @NamedQuery(name = "Credential.findByPasswordhash", query = "SELECT c FROM Credential c WHERE c.passwordhash = :passwordhash")
+    , @NamedQuery(name = "Credential.findByUserNamePwd", query = "SELECT c FROM Credential c WHERE c.username = :username AND c.passwordhash = :passwordhash")
     , @NamedQuery(name = "Credential.findByRegistrationdate", query = "SELECT c FROM Credential c WHERE c.registrationdate = :registrationdate")
     , @NamedQuery(name = "Credential.findByResId", query = "SELECT c FROM Credential c WHERE c.resid = :resId")})
 public class Credential implements Serializable {
@@ -37,6 +38,7 @@ public class Credential implements Serializable {
     public final static String GET_BY_PASSWORD = "Credential.findByPasswordhash";
     public final static String GET_BY_REGISTRATION_DATE = "Credential.findByRegistrationdate";
     public final static String GET_BY_RESID ="Credential.findByResId";
+    public final static String GET_BY_USERNAME_PASSWORD ="Credential.findByUserNamePwd";
     
     @Id
     @Basic(optional = false)

@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity
         // Set sync 24-hour data receiver
         sync24HourUsageDateReceiver  = new Sync24HourUsageDateReceiver(this);
 
-
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
