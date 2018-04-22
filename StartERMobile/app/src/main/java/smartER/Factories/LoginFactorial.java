@@ -47,7 +47,7 @@ public class LoginFactorial  extends AsyncTask<Void, Void, Void> {
         Log.d("SmartERDebug","****login logic start****");
         // get input username and pwd
         String usernameFromUI = tvUserName.getText().toString();
-        String pwdFromUI = tvPwd.getText().toString();
+        String pwdFromUI = SmartERMobileUtility.encryptPwd(tvPwd.getText().toString());
 
         // initial resident info by calling webservice
         try {
@@ -71,7 +71,6 @@ public class LoginFactorial  extends AsyncTask<Void, Void, Void> {
         if (isFound) {
             // set application-level latitude and longtitude for current user
             LatLng latLng = MapWebservice.getLatLngByAddress(userProfile.getAddress());
-            Log.d("SmartERDebug", "222222222222:" + latLng.getLatitude() + ":" + latLng.getLongitude());
             SmartERMobileUtility.setLatitude(latLng.getLatitude());
             SmartERMobileUtility.setLongtiude(latLng.getLongitude());
             h.sendEmptyMessage(2);
