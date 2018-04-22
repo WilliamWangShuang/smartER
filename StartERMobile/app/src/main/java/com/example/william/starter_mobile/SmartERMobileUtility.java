@@ -47,6 +47,10 @@ public class SmartERMobileUtility extends Application {
     private static Context mContext;
     // sync one record result
     private static String syncOneRecordResult;
+    // latitude of current user
+    private static double latitude;
+    // longtitude of current user
+    private static double longtiude;
 
     // format exception message
     public static String getExceptionInfo(Exception ex) {
@@ -130,6 +134,22 @@ public class SmartERMobileUtility extends Application {
 
     public static void setmContext(Context mContext) {
         SmartERMobileUtility.mContext = mContext;
+    }
+
+    public static double getLatitude() {
+        return latitude;
+    }
+
+    public static double getLongtiude() {
+        return longtiude;
+    }
+
+    public static void setLatitude(double latitude) {
+        SmartERMobileUtility.latitude = latitude;
+    }
+
+    public static void setLongtiude(double longtiude) {
+        SmartERMobileUtility.longtiude = longtiude;
     }
 
     public static Context getmContext() {

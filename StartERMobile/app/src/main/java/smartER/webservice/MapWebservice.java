@@ -3,6 +3,7 @@ package smartER.webservice;
 import android.util.Log;
 
 import com.example.william.starter_mobile.Constant;
+import com.example.william.starter_mobile.SmartERMobileUtility;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ public class MapWebservice {
     // Original data retrieve from weather service
     private static JSONObject mapInfoByWS = null;
 
-    // get latitude by address
+    // get latitude and usage for all residents
     public static ResidentMapEntity getLatLngAndUsageByAddress(List<SmartERUserWebservice.UserProfile> users, List<JSONObject> usageDataJsons, String viewType) throws IOException, JSONException {
         // start to construct latLng map of all residents
         Map<Integer, LatLng> LatLngProviders = new LinkedHashMap<>();
@@ -74,6 +75,33 @@ public class MapWebservice {
 
         // construct return result
         ResidentMapEntity result = new ResidentMapEntity(LatLngProviders, residentUsageInfoEntities);
+        return result;
+    }
+
+    // get latitude by address
+    public static LatLng getLatLngByAddress(String address) {
+        LatLng result = new LatLng();
+
+        try {
+            // encode address and generate ws request URL
+            StringBuilder urlBuilder = new StringBuilder(Constant.MAP_WS_URL);
+            urlBuilder.append(address.replaceAll(" ", "%20"));
+            // Call the service to get data
+            JSONObject jsonObject = webservice.requestWebService(urlBuilder.toString());
+            // get results json
+            JSONObject jsonResult = jsonObject.getJSONArray(Constant.WS_KEY_MAP_RESULT).getJSONObject(0);
+            // get location json
+            JSONObject jsonLocation = jsonResult.getJSONArray(Constant.WS_KEY_MAP_LOCATION).getJSONObject(0);
+            // get latlng
+            JSONObject jsonLatlng = jsonLocation.getJSONObject(Constant.WS_KEY_MAP_LATLNG);
+
+            if (jsonLatlng != null && jsonLatlng.length() > 0) {
+                result.setLatitude(jsonLatlng.getDouble(Constant.WS_KEY__MAP_LAT));
+                result.setLongitude(jsonLatlng.getDouble(Constant.WS_KEY_MAP_LNG));
+            }
+        } catch (Exception ex) {
+            Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
+        }
         return result;
     }
 

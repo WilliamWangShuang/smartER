@@ -59,9 +59,6 @@ public class MainActivity extends AppCompatActivity
 
         // keep context
         SmartERMobileUtility.setmContext(this);
-        // TODO: should be put in login logic
-        // set resident ID after login
-        SmartERMobileUtility.setResId(3);
 
         // Initial context value for those which are used to work as the base of generating apps usage
         SmartERMobileUtility.resetCtxBasedValue();

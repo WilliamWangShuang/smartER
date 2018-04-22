@@ -12,7 +12,9 @@ import android.widget.Toast;
 import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
 public class LoginFactorial  extends AsyncTask<Void, Void, Void> {
@@ -67,6 +69,11 @@ public class LoginFactorial  extends AsyncTask<Void, Void, Void> {
 
         // if succeed to find user. initial application-level value and go to main activity
         if (isFound) {
+            // set application-level latitude and longtitude for current user
+            LatLng latLng = MapWebservice.getLatLngByAddress(userProfile.getAddress());
+            Log.d("SmartERDebug", "222222222222:" + latLng.getLatitude() + ":" + latLng.getLongitude());
+            SmartERMobileUtility.setLatitude(latLng.getLatitude());
+            SmartERMobileUtility.setLongtiude(latLng.getLongitude());
             h.sendEmptyMessage(2);
         } else {
             if (isError) {
