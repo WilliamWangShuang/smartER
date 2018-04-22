@@ -10,11 +10,48 @@
     <string name="text_login_username">User name</string>
     <string name="login_username_hint">User name</string>
     <string name="login_pwd_hint">Password</string>
+    <string name="login_confirm_pwd_hint">Type in password again</string>
     <string name="sign_in_title">Sign In</string>
+    <string name="personal_info_title">Personal Information</string>
+    <string name="account_info_title">Account Information</string>
+    <string name="register_title">Create a new account</string>
     <string name="big_title_login">Smart Energy</string>
+    <string name="register_firstname">First name</string>
+    <string name="register_surename">Sure name</string>
+    <string name="register_address">Address</string>
+    <string name="register_postcode">Postcode</string>
+    <string name="register_phone">Phone</string>
+    <string name="register_email">Email</string>
+    <string name="register_number_of_resident">No. of resident</string>
+    <string name="register_energy_provider">Energy provider</string>
+    <string name="register_birthday">Date of birth</string>
+    <string name="register_username">User name</string>
 
     <string-array name="map_view_type_array">
         <item>daily</item>
         <item>hourly</item>
+    </string-array>
+
+    <string-array name="register_number_of_register">
+        <item>No. of resident</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="register_energy_provider">
+        <item>Energy provider</item>
+        <item>Red Energy</item>
+        <item>AGL</item>
+        <item>Alinta Energy</item>
+        <item>Powershop</item>
+        <item>QEnergy</item>
     </string-array>
 </resources>

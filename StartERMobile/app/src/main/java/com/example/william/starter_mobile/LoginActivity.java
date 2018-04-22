@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import smartER.Factories.LoginFactorial;
 import smartER.webservice.SmartERUserWebservice;
@@ -33,6 +32,16 @@ public class LoginActivity extends AppCompatActivity {
                 TextView tvPwd = (TextView)findViewById(R.id.password);
                 LoginFactorial loginFactorial = new LoginFactorial(LoginActivity.this, tvUsername, tvPwd);
                 loginFactorial.execute();
+            }
+        });
+
+        Button btnRegister = findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to register activity
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
     }
