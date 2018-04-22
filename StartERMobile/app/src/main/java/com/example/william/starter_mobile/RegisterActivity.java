@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,8 +36,8 @@ public class RegisterActivity extends AppCompatActivity   {
     private TextView msgFirstName;
     private TextView msgSureName;
     private TextView msgDOB;
-    private TextView msgAddressName;
-    private TextView msgPostcodeName;
+    private TextView msgAddress;
+    private TextView msgPostcode;
     private TextView msgPhone;
     private TextView msgEmail;
     private TextView msgNoOfResident;
@@ -60,8 +61,8 @@ public class RegisterActivity extends AppCompatActivity   {
         msgFirstName = (TextView)findViewById(R.id.lblFirstErrorMsg);
         msgSureName = (TextView)findViewById(R.id.lblSureErrorMsg);
         msgDOB = (TextView)findViewById(R.id.lblDOBErrorMsg);
-        msgAddressName = (TextView)findViewById(R.id.lblAddressErrorMsg);
-        msgPostcodeName = (TextView)findViewById(R.id.lblPostcodeErrorMsg);
+        msgAddress = (TextView)findViewById(R.id.lblAddressErrorMsg);
+        msgPostcode = (TextView)findViewById(R.id.lblPostcodeErrorMsg);
         msgPhone = (TextView)findViewById(R.id.lblPhoneErrorMsg);
         msgEmail = (TextView)findViewById(R.id.lblEmailErrorMsg);
         msgNoOfResident = (TextView)findViewById(R.id.lblNumberOfResidentErrorMsg);
@@ -100,8 +101,8 @@ public class RegisterActivity extends AppCompatActivity   {
                 RegisterFactorial.RegisterInfoUI registerInfoUI = new RegisterFactorial.RegisterInfoUI(firstName, sureName, dob, address, postcode, phone, email, residentNumber, energyProvider, userName, pwd, repeatPwd);
 
                 // validate fields on UI
-                boolean isDataValidate = true;
-
+                boolean isDataValidate = validateUIFields(registerInfoUI);
+                Log.d("SmartERDebug", "11111111111111111111:" + isDataValidate);
             }
         });
 
@@ -200,9 +201,31 @@ public class RegisterActivity extends AppCompatActivity   {
     private boolean validateUIFields(RegisterFactorial.RegisterInfoUI entity) {
         boolean result = false;
         // validate first name
-        result = validateEmpty(entity.getFirstName(), Strings.get(R.string.register_first_name_empty_msg), msgFirstName);
-        // validate first name
-        result = validateEmpty(entity.getSureName(), Strings.get(R.string.register_sure_name_empty_msg), msgFirstName);
+        result = validateEmpty(entity.getFirstName(), getResources().getString(R.string.register_first_name_empty_msg), msgFirstName);
+        Log.d("SmartERDebug", "222222222222:" + (getResources().getString(R.string.register_first_name_empty_msg) == null));
+        // validate sure name
+        result = validateEmpty(entity.getSureName(), getResources().getString(R.string.register_sure_name_empty_msg), msgSureName);
+        // validate dob
+        result = validateEmpty(entity.getDob(), getResources().getString(R.string.register_dob_empty_msg), msgDOB);
+        // validate address
+        result = validateEmpty(entity.getAddress(), getResources().getString(R.string.register_address_empty_msg), msgAddress);
+        // validate postcode
+        result = validateEmpty(entity.getPostcode(), getResources().getString(R.string.register_postcode_empty_msg), msgPostcode);
+        // validate phone
+        result = validateEmpty(entity.getPhone(), getResources().getString(R.string.register_phone_empty_msg), msgPhone);
+        // validate email
+        result = validateEmpty(entity.getEmail(), getResources().getString(R.string.register_email_empty_msg), msgEmail);
+        // validate number of resident
+        result = validateEmpty(entity.getResidentNumber(), getResources().getString(R.string.register_resident_number_empty_msg), msgNoOfResident);
+        // validate energy provider
+        result = validateEmpty(entity.getEnergyProvider(), getResources().getString(R.string.register_energy_provider_empty_msg), msgEnergyProvider);
+        // validate user name
+        result = validateEmpty(entity.getUserName(), getResources().getString(R.string.register_username_empty_msg), msgUsername);
+        // validate password
+        result = validateEmpty(entity.getPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgPwd);
+        // validate confirm pwd
+        result = validateEmpty(entity.getRepeatPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgConfirmPwd);
+
         return result;
     }
 
