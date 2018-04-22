@@ -8,8 +8,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import smartER.Factories.LoginFactorial;
+import smartER.webservice.SmartERUserWebservice;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,11 +29,12 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivityForResult(intent, 1);
+                TextView tvUsername = (TextView)findViewById(R.id.login_username);
+                TextView tvPwd = (TextView)findViewById(R.id.password);
+                LoginFactorial loginFactorial = new LoginFactorial(LoginActivity.this, tvUsername, tvPwd);
+                loginFactorial.execute();
             }
         });
     }
-
 
 }

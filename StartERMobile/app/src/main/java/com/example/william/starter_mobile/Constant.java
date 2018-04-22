@@ -10,6 +10,7 @@ public class Constant {
     public static String MAP_WS_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp&thumbMaps=false&location=";
     public static String MAP_WS_MULTIPLE_LOCATION_URL = "http://www.mapquestapi.com/geocoding/v1/batch?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp";
     public static String MAP_WS_CHOOSE_VIEW = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findDailyOrHourlyUsageForAll/";
+    public static String FIND_USER_CREDENTIAL = " http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential/findByUserNamePassword/";
     public static String MAP_WS_LOCATION_URL_PARAM = "&location=";
     public static String MAP_WS_POSTCODE_URL_PARAM = "&postalCode=";
 

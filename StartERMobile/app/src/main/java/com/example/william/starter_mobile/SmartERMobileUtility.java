@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +37,10 @@ public class SmartERMobileUtility extends Application {
     private static boolean isContinuGenerate;
     // resident ID
     private static int resId;
+    // resident adddress
+    private static String address;
+    // resident first name
+    private static String firstName;
     // Random generator
     private final static Random random = new Random();
     // current Context
@@ -104,6 +110,22 @@ public class SmartERMobileUtility extends Application {
 
     public static void setResId(int resId) {
         SmartERMobileUtility.resId = resId;
+    }
+
+    public static String getAddress() {
+        return address;
+    }
+
+    public static String getFirstName() {
+        return firstName;
+    }
+
+    public static void setAddress(String address) {
+        SmartERMobileUtility.address = address;
+    }
+
+    public static void setFirstName(String firstName) {
+        SmartERMobileUtility.firstName = firstName;
     }
 
     public static void setmContext(Context mContext) {
@@ -217,6 +239,32 @@ public class SmartERMobileUtility extends Application {
             result.put(temp);
         }
 
+        return result;
+    }
+
+    //  encrypt password
+    public static String encryptPwd(String pwd) {
+        String result = "";
+
+        try{
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            //Add password bytes to digest
+            md.update(pwd.getBytes());
+            //Get the hash's bytes
+            byte[] bytes = md.digest();
+            //This bytes[] has bytes in decimal format;
+            //Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            //Get complete hashed password in hex format
+            result = sb.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
         return result;
     }
 }

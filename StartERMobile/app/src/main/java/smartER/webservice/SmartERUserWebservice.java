@@ -54,6 +54,32 @@ public class SmartERUserWebservice {
         return users;
     }
 
+    // find resident by username and passwords
+    public static UserProfile findUserByUsernameAndPwd(String username, String pwd) throws IOException, JSONException, ParseException {
+        UserProfile result = null;
+        JSONObject credentialJson = null;
+
+        try {
+            // get json array from ws
+            JSONArray jsonArray = webservice.requestWebServiceArray(Constant.FIND_USER_CREDENTIAL + username + "/" + pwd);
+            Log.d("SmartERDebug", "json array length:" + jsonArray.length());
+            // get use credential by username and pwd
+            if (jsonArray.length() > 0)
+                credentialJson = jsonArray.getJSONObject(0);
+            else
+                credentialJson = null;
+
+            if (credentialJson != null) {
+                // get resident json object
+                JSONObject residentJsonObj = credentialJson.getJSONObject(Constant.WS_KEY_RESID);
+                result = new UserProfile(residentJsonObj);
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return result;
+    }
+
     // inner class working as entity class for user
     public static class UserProfile {
         // resident id

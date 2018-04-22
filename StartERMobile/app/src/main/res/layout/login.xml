@@ -31,6 +31,15 @@
             android:textStyle="bold"
             android:fontFamily="@string/style_satellite"
             android:textSize="15pt"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/lblErrorMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#CB4335"
+            android:textStyle="bold"
+            android:fontFamily="@string/style_satellite"
             android:paddingLeft="10dp"/>
 
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -55,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/login_pwd_hint"
                     android:inputType="textPassword"
-                    android:layout_column="1"/>
+                    android:layout_column="1" />
             </TableRow>
 
             <TableRow>

@@ -112,8 +112,9 @@ public class webservice {
                     resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_401));
                     break;
                 case HttpURLConnection.HTTP_NOT_FOUND:
-                    resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_404));
-                    break;
+                    throw new NullPointerException("");
+                    //resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_404));
+                    //break;
                 case HttpURLConnection.HTTP_INTERNAL_ERROR:
                     resultJSONArray = new JSONArray(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_500));
                     break;
