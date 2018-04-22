@@ -13,11 +13,10 @@ import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-
 import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
-public class LoginFactorial  extends AsyncTask<Void, Void, Void> {
+public class LoginFactorial extends AsyncTask<Void, Void, Void> {
     private TextView tvUserName;
     private TextView tvPwd;
     private Activity loginActivity;

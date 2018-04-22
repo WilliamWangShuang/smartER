@@ -2,7 +2,6 @@ package smartER.Factories;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.example.william.starter_mobile.SmartERMobileUtility;
 
 public class ResetCtxBasedValueFactorial extends AsyncTask<Void, Void, Void> {

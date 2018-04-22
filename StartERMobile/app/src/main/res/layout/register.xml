@@ -10,11 +10,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/imgBtnBack"
+            android:layout_width="50dp"
+            android:layout_height="45px"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/back"
+            android:layout_marginTop="10dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/personal_info_title"
-            android:textColor="#000000"
+            android:textColor="@color/mapbox_blue"
             android:textStyle="bold"
             android:fontFamily="@string/style_satellite"
             android:textSize="15pt"
@@ -39,6 +47,17 @@
                     android:hint="@string/register_firstname"
                     android:layout_column="1" />
             </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblFirstErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
 
             <TableRow>
                 <EditText
@@ -47,6 +66,17 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/register_surename"
                     android:layout_column="1" />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblSureErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>
@@ -57,6 +87,17 @@
                     android:focusable="false"
                     android:hint="@string/register_birthday"
                     android:layout_column="1" />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblDOBErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>
@@ -69,12 +110,35 @@
             </TableRow>
 
             <TableRow>
+                <TextView
+                    android:id="@+id/lblAddressErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
+
+            <TableRow>
                 <EditText
                     android:id="@+id/register_postcode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/register_postcode"
                     android:layout_column="1" />
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblPostcodeErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>
@@ -86,6 +150,17 @@
                     android:hint="@string/register_phone"
                     android:layout_column="1" />
             </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblPhoneErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
 
             <TableRow>
                 <EditText
@@ -96,6 +171,17 @@
                     android:hint="@string/register_email"
                     android:layout_column="1" />
             </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblEmailErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
 
             <TableRow>
                 <Spinner
@@ -103,10 +189,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:hint="@string/register_number_of_resident"
                     android:layout_column="1"
                     android:entries="@array/register_number_of_register">
                 </Spinner>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblNumberOfResidentErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>
@@ -115,12 +211,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:hint="@string/register_number_of_resident"
                     android:layout_column="1"
                     android:entries="@array/register_energy_provider">
                 </Spinner>
             </TableRow>
-
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblEnergyProviderErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
         </TableLayout>
 
         <View
@@ -132,7 +237,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/account_info_title"
-            android:textColor="#000000"
+            android:textColor="@color/mapbox_blue"
             android:textStyle="bold"
             android:fontFamily="@string/style_satellite"
             android:textSize="15pt"
@@ -157,6 +262,17 @@
                     android:hint="@string/register_username"
                     android:layout_column="1" />
             </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblUserNameErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
 
             <TableRow>
                 <android.support.design.widget.TextInputLayout
@@ -174,6 +290,17 @@
                         android:inputType="textPassword"/>
                 </android.support.design.widget.TextInputLayout>
             </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblPwdErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
+            </TableRow>
 
             <TableRow>
                 <android.support.design.widget.TextInputLayout
@@ -190,6 +317,17 @@
                         android:hint="@string/login_confirm_pwd_hint"
                         android:inputType="textPassword"/>
                 </android.support.design.widget.TextInputLayout>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/lblConfirmPwdErrorMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#CB4335"
+                    android:textStyle="bold"
+                    android:fontFamily="@string/style_satellite"
+                    android:paddingLeft="10dp"
+                    android:layout_column="1"/>
             </TableRow>
 
             <TableRow>

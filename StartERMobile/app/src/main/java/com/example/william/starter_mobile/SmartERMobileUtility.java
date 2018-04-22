@@ -287,4 +287,9 @@ public class SmartERMobileUtility extends Application {
         }
         return result;
     }
+
+    // check string is null or empty
+    public static boolean isEmptyOrNull (String str) {
+        return str == null || "".equals(str);
+    }
 }
