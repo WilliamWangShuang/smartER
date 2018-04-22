@@ -202,7 +202,6 @@ public class RegisterActivity extends AppCompatActivity   {
         boolean result = false;
         // validate first name
         result = validateEmpty(entity.getFirstName(), getResources().getString(R.string.register_first_name_empty_msg), msgFirstName);
-        Log.d("SmartERDebug", "222222222222:" + (getResources().getString(R.string.register_first_name_empty_msg) == null));
         // validate sure name
         result = validateEmpty(entity.getSureName(), getResources().getString(R.string.register_sure_name_empty_msg), msgSureName);
         // validate dob
@@ -216,9 +215,9 @@ public class RegisterActivity extends AppCompatActivity   {
         // validate email
         result = validateEmpty(entity.getEmail(), getResources().getString(R.string.register_email_empty_msg), msgEmail);
         // validate number of resident
-        result = validateEmpty(entity.getResidentNumber(), getResources().getString(R.string.register_resident_number_empty_msg), msgNoOfResident);
+        result = validateSpinnerEmpty(entity.getResidentNumber(), residentNumberSpinner, getResources().getString(R.string.register_resident_number_empty_msg), msgNoOfResident);
         // validate energy provider
-        result = validateEmpty(entity.getEnergyProvider(), getResources().getString(R.string.register_energy_provider_empty_msg), msgEnergyProvider);
+        result = validateSpinnerEmpty(entity.getEnergyProvider(), energyProviderSpinner, getResources().getString(R.string.register_energy_provider_empty_msg), msgEnergyProvider);
         // validate user name
         result = validateEmpty(entity.getUserName(), getResources().getString(R.string.register_username_empty_msg), msgUsername);
         // validate password
@@ -233,6 +232,22 @@ public class RegisterActivity extends AppCompatActivity   {
     private boolean validateEmpty(String str, String message, TextView msgView) {
         boolean result = false;
         if (SmartERMobileUtility.isEmptyOrNull(str)){
+            result = false;
+            msgView.setText(message);
+        } else {
+            result = true;
+            msgView.setText("");
+        }
+
+        // return validate result
+        return result;
+    }
+
+    // validate one field
+    private boolean validateSpinnerEmpty(String str, Spinner spinner, String message, TextView msgView) {
+        boolean result = false;
+        String firstValue = (String)spinner.getAdapter().getItem(0);
+        if (firstValue.equals(str)){
             result = false;
             msgView.setText(message);
         } else {
