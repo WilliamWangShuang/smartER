@@ -3,6 +3,7 @@ package com.example.william.starter_mobile;
 public class Constant {
     // web service URL
     public static String WEATHER_WS_URL = "http://api.openweathermap.org/data/2.5/weather?id=7839805&APPID=8a0223cc559ebf08920e4cbf1279facd";
+    public static String WEATHER_WS_POSTCODE_URL = "http://api.openweathermap.org/data/2.5/weather?APPID=8a0223cc559ebf08920e4cbf1279facd&zip=";
     public static String SMARTER_WS_ELECTRICITY_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity";
     public static String SAVE_RESIDENT_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident";
     public static String SAVE_CREDENTIAO_URL ="http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential";
@@ -24,6 +25,7 @@ public class Constant {
     public static String MSG_500 = "500 Internal error when request web resource";
     public static String DATE_FORMAT = "yyyy-MM-dd";
     public static String SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    public static String DATE_TIME_FORMAT_ON_PAGE = "yyyy-MM-dd";
     public static String SUCCESS_MSG = "Success";
 
     // map view
@@ -62,6 +64,7 @@ public class Constant {
     public static String WS_KEY_MAP_LNG = "lng";
     public static String WS_KEY_MAP_TOTAL_USAGE = "usage";
     public static String WS_KEY_MAP_TIME = "time";
+    public static String WS_KEY_MAP_COUNTRY = "adminArea1";
 
     // json key for credential
     public static String WS_KEY_CREDENTIAL_PASSWORDHASH = "passwordhash";

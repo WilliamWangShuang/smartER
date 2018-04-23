@@ -87,7 +87,7 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
                         SmartERMobileUtility.setFirstName(registerInfoUI.getFirstName());
                         // go to main activity
                         Intent intent = new Intent(activity, MainActivity.class);
-                        activity.startActivityForResult(intent, 1);Log.d("SmartERDebug", "3333333333333");
+                        activity.startActivityForResult(intent, 1);
                     } else {
                         Toast.makeText(activity, "Register fail and try again.If not work, unintall this shit app.", Toast.LENGTH_LONG);
                     }

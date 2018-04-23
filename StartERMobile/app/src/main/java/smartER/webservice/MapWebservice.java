@@ -81,6 +81,8 @@ public class MapWebservice {
     // get latitude by address
     public static LatLng getLatLngByAddress(String address) {
         LatLng result = new LatLng();
+        // country
+        String country = "";
 
         try {
             // encode address and generate ws request URL
@@ -94,6 +96,10 @@ public class MapWebservice {
             JSONObject jsonLocation = jsonResult.getJSONArray(Constant.WS_KEY_MAP_LOCATION).getJSONObject(0);
             // get latlng
             JSONObject jsonLatlng = jsonLocation.getJSONObject(Constant.WS_KEY_MAP_LATLNG);
+            // get country
+            country = jsonLocation.getString(Constant.WS_KEY_MAP_COUNTRY);
+            // set country to application level variable
+            SmartERMobileUtility.setCountry(country);
 
             if (jsonLatlng != null && jsonLatlng.length() > 0) {
                 result.setLatitude(jsonLatlng.getDouble(Constant.WS_KEY__MAP_LAT));

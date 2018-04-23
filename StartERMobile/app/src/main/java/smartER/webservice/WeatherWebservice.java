@@ -1,8 +1,12 @@
 package smartER.webservice;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.example.william.starter_mobile.Constant;
+import com.example.william.starter_mobile.SmartERMobileUtility;
+
 import java.io.IOException;
 
 public class WeatherWebservice {
@@ -12,7 +16,10 @@ public class WeatherWebservice {
     // Initial original data
     private static void getCurrentWeatherInfo() throws IOException, JSONException {
         // Call the service to get data
-        massInfoByWS = webservice.requestWebService(Constant.WEATHER_WS_URL);
+        //massInfoByWS = webservice.requestWebService(Constant.WEATHER_WS_URL);
+        String weatherUrl = Constant.WEATHER_WS_POSTCODE_URL + SmartERMobileUtility.getPostcode() + "," + SmartERMobileUtility.getCountry();
+        Log.d("SmartERDebug", "weather url:" + weatherUrl);
+        massInfoByWS = webservice.requestWebService(weatherUrl);
     }
 
     // Get current temperature

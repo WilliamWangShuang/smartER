@@ -51,6 +51,10 @@ public class SmartERMobileUtility extends Application {
     private static double latitude;
     // longtitude of current user
     private static double longtiude;
+    // post code
+    private static int postcode;
+    // country
+    private static String country;
 
     // format exception message
     public static String getExceptionInfo(Exception ex) {
@@ -150,6 +154,22 @@ public class SmartERMobileUtility extends Application {
 
     public static void setLongtiude(double longtiude) {
         SmartERMobileUtility.longtiude = longtiude;
+    }
+
+    public static int getPostcode() {
+        return postcode;
+    }
+
+    public static String getCountry() {
+        return country;
+    }
+
+    public static void setPostcode(int postcode) {
+        SmartERMobileUtility.postcode = postcode;
+    }
+
+    public static void setCountry(String country) {
+        SmartERMobileUtility.country = country;
     }
 
     public static Context getmContext() {

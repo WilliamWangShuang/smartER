@@ -13,6 +13,9 @@ import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+
+import java.util.Map;
+
 import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
@@ -68,10 +71,12 @@ public class LoginFactorial extends AsyncTask<Void, Void, Void> {
 
         // if succeed to find user. initial application-level value and go to main activity
         if (isFound) {
-            // set application-level latitude and longtitude for current user
+            // set application-level latitude and longtitude for current user and postcode for retrieving local weather
             LatLng latLng = MapWebservice.getLatLngByAddress(userProfile.getAddress());
             SmartERMobileUtility.setLatitude(latLng.getLatitude());
             SmartERMobileUtility.setLongtiude(latLng.getLongitude());
+            SmartERMobileUtility.setPostcode(Integer.parseInt(userProfile.getPostCode()));
+            SmartERMobileUtility.setFirstName(userProfile.getFirstName());
             h.sendEmptyMessage(2);
         } else {
             if (isError) {

@@ -102,6 +102,7 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
+                Log.d("SmartERDebug","my location:" + myLocation.getLatitude() + " : " + myLocation.getLongitude());
                 mMapboxMap = mapboxMap;
                 mMapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 11));
                 // remove all markers first

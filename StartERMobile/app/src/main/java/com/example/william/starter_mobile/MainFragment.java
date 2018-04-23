@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import smartER.webservice.Receivers.AppDataGenerator;
 import smartER.webservice.Receivers.CurrentTempReceiver;
 import smartER.webservice.Receivers.ResetCtxBasedValuesReceiver;
@@ -24,6 +28,10 @@ public class MainFragment extends Fragment {
     private SmartERUsageWebservice smartERUsageWebservice;
     // textView for temperature
     private TextView tvTemp;
+    // textView for current date
+    private TextView tvCurrDateTime;
+    // textView for first name
+    private TextView tvFirstName;
     // current temperature receiver
     private CurrentTempReceiver currentTempReceiver;
 
@@ -43,6 +51,15 @@ public class MainFragment extends Fragment {
 
         // get view of current temperature
         tvTemp = getActivity().findViewById(R.id.tvTemp);
+        // get current date text view
+        tvCurrDateTime = getActivity().findViewById(R.id.home_date_time);
+        // set current date time and show on page
+        SimpleDateFormat f = new SimpleDateFormat(Constant.DATE_TIME_FORMAT_ON_PAGE);
+        tvCurrDateTime.setText(f.format(Calendar.getInstance().getTime()));
+        //get first name text view
+        tvFirstName = getActivity().findViewById(R.id.home_firstName);
+        // set first name
+        tvFirstName.setText(SmartERMobileUtility.getFirstName());
 
         // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(getActivity());
