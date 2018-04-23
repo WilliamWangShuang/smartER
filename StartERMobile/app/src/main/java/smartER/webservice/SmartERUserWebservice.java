@@ -29,6 +29,38 @@ public class SmartERUserWebservice {
         return jsonObject;
     }
 
+    // get resident by username
+    public static JSONArray findUserByEmail(String email) throws IOException, JSONException {
+        // result object
+        JSONArray jsonObject = new JSONArray();
+        try {
+            jsonObject = webservice.requestWebServiceArray(Constant.FIND_USER_BY_EMAIL_WS + email);
+        } catch (NullPointerException ex) {
+            // if null pointer exception, means no use exist in db with same email, then return null
+            return null;
+        } catch (Exception ex) {
+            throw ex;
+        }
+        // return result
+        return jsonObject;
+    }
+
+    // get resident credential by user name
+    public static JSONArray findCredentialByUsername(String username) throws IOException, JSONException {
+        // result object
+        JSONArray jsonObject = new JSONArray();
+        try {
+            jsonObject = webservice.requestWebServiceArray(Constant.FIND_CRENDENTIAL_BY_USERNAME_WS + username);
+        } catch (NullPointerException ex){
+            // if json content is 404, means no use exist in db with same user name, then return null
+            return null;
+        } catch (Exception ex) {
+            throw ex;
+        }
+        // return result
+        return jsonObject;
+    }
+
     // get profile of all users
     public static List<UserProfile> findAllUsers() throws IOException, JSONException, ParseException {
         List<UserProfile> users = new ArrayList<>();

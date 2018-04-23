@@ -27,15 +27,20 @@
 
     <string name="register_first_name_empty_msg">First name cannot be empty</string>
     <string name="register_sure_name_empty_msg">Sure name cannot be empty</string>
-    <string name="register_dob_empty_msg">Date of brith cannot be empty</string>
+    <string name="register_dob_empty_msg">Date of birth cannot be empty</string>
+    <string name="register_dob_format_msg">Date of birth cannot be in the future.</string>
     <string name="register_address_empty_msg">Address cannot be empty</string>
     <string name="register_postcode_empty_msg">Postcode cannot be empty</string>
     <string name="register_phone_empty_msg">Phone cannot be empty</string>
     <string name="register_email_empty_msg">Email cannot be empty</string>
+    <string name="register_email_format_msg">Email format is wrong. Must contain at least 1 \'@\' and end with \'.\' following by domain</string>
+    <string name="register_email_exist_msg">User with same email already exist. Please change another email.</string>
     <string name="register_resident_number_empty_msg">No. of resident cannot be empty</string>
     <string name="register_energy_provider_empty_msg">Energy provider cannot be empty</string>
     <string name="register_username_empty_msg">User name cannot be empty</string>
+    <string name="register_username_exist_msg">User with same user name already exist. Please change another email.</string>
     <string name="register_pwd_empty_msg">Password cannot be empty</string>
+    <string name="register_pwd_format_msg">Password at least has 8 length. Contains at least 1 special character, 1 lower and upper letter, and 1 number</string>
     <string name="register_confirm_pwd_msg">Confirm is different with password</string>
 
     <string-array name="map_view_type_array">

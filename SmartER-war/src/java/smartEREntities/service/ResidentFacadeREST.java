@@ -140,7 +140,7 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
     
     @GET
     @Path("findByEmail/{email}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public List<Resident> findByEmail(@PathParam("email") String email){          
         Query query = em.createNamedQuery(Resident.GET_BY_EMAIL);
         query.setParameter("email", email);

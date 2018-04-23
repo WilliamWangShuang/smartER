@@ -18,9 +18,11 @@ import android.widget.TextView;
 
 import net.hockeyapp.android.Strings;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import smartER.Factories.RegisterFactorial;
@@ -102,7 +104,12 @@ public class RegisterActivity extends AppCompatActivity   {
 
                 // validate fields on UI
                 boolean isDataValidate = validateUIFields(registerInfoUI);
-                Log.d("SmartERDebug", "11111111111111111111:" + isDataValidate);
+                Log.d("SmartERDebug", "UI fields validation:" + isDataValidate);
+                // if UI validate passed, do server side validation and run logic flow
+                if (isDataValidate) {
+                    RegisterFactorial registerFactorial = new RegisterFactorial(RegisterActivity.this, (TextView)findViewById(R.id.register_username), (TextView)findViewById(R.id.register_email));
+                    registerFactorial.execute();
+                }
             }
         });
 
@@ -203,27 +210,30 @@ public class RegisterActivity extends AppCompatActivity   {
         // validate first name
         result = validateEmpty(entity.getFirstName(), getResources().getString(R.string.register_first_name_empty_msg), msgFirstName);
         // validate sure name
-        result = validateEmpty(entity.getSureName(), getResources().getString(R.string.register_sure_name_empty_msg), msgSureName);
+        result = validateEmpty(entity.getSureName(), getResources().getString(R.string.register_sure_name_empty_msg), msgSureName) && result;
         // validate dob
-        result = validateEmpty(entity.getDob(), getResources().getString(R.string.register_dob_empty_msg), msgDOB);
+        result = validateEmpty(entity.getDob(), getResources().getString(R.string.register_dob_empty_msg), msgDOB) && result;
+        result = validateDobValue(entity.getDob(), getResources().getString(R.string.register_dob_format_msg)) && result;
         // validate address
-        result = validateEmpty(entity.getAddress(), getResources().getString(R.string.register_address_empty_msg), msgAddress);
+        result = validateEmpty(entity.getAddress(), getResources().getString(R.string.register_address_empty_msg), msgAddress) && result;
         // validate postcode
-        result = validateEmpty(entity.getPostcode(), getResources().getString(R.string.register_postcode_empty_msg), msgPostcode);
+        result = validateEmpty(entity.getPostcode(), getResources().getString(R.string.register_postcode_empty_msg), msgPostcode) && result;
         // validate phone
-        result = validateEmpty(entity.getPhone(), getResources().getString(R.string.register_phone_empty_msg), msgPhone);
+        result = validateEmpty(entity.getPhone(), getResources().getString(R.string.register_phone_empty_msg), msgPhone) && result;
         // validate email
-        result = validateEmpty(entity.getEmail(), getResources().getString(R.string.register_email_empty_msg), msgEmail);
+        result = validateEmpty(entity.getEmail(), getResources().getString(R.string.register_email_empty_msg), msgEmail) && result;
+        result = validateEmailFormat(entity.getEmail(), getResources().getString(R.string.register_email_format_msg)) && result;
         // validate number of resident
-        result = validateSpinnerEmpty(entity.getResidentNumber(), residentNumberSpinner, getResources().getString(R.string.register_resident_number_empty_msg), msgNoOfResident);
+        result = validateSpinnerEmpty(entity.getResidentNumber(), residentNumberSpinner, getResources().getString(R.string.register_resident_number_empty_msg), msgNoOfResident) && result;
         // validate energy provider
-        result = validateSpinnerEmpty(entity.getEnergyProvider(), energyProviderSpinner, getResources().getString(R.string.register_energy_provider_empty_msg), msgEnergyProvider);
+        result = validateSpinnerEmpty(entity.getEnergyProvider(), energyProviderSpinner, getResources().getString(R.string.register_energy_provider_empty_msg), msgEnergyProvider) && result;
         // validate user name
-        result = validateEmpty(entity.getUserName(), getResources().getString(R.string.register_username_empty_msg), msgUsername);
+        result = validateUserNameEmpty(entity.getUserName(), getResources().getString(R.string.register_username_empty_msg)) && result;
         // validate password
-        result = validateEmpty(entity.getPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgPwd);
+        result = validateEmpty(entity.getPwd(), getResources().getString(R.string.register_pwd_empty_msg), msgPwd) && result;
+        result = validatePwdFormat(entity.getPwd(), getResources().getString(R.string.register_pwd_format_msg)) && result;
         // validate confirm pwd
-        result = validateEmpty(entity.getRepeatPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgConfirmPwd);
+        result = validateEmpty(entity.getRepeatPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgConfirmPwd) && result;
 
         return result;
     }
@@ -243,6 +253,22 @@ public class RegisterActivity extends AppCompatActivity   {
         return result;
     }
 
+    // validate user name empty
+    private boolean validateUserNameEmpty(String str, String message) {
+        boolean result = false;
+        if (SmartERMobileUtility.isEmptyOrNull(str)){
+            result = false;
+            msgUsername.setText(message);
+        } else {
+            result = true;
+            msgUsername.setText("");
+            ((TextView)findViewById(R.id.register_username)).setBackgroundColor(getResources().getColor(R.color.whiteBg));
+        }
+
+        // return validate result
+        return result;
+    }
+
     // validate one field
     private boolean validateSpinnerEmpty(String str, Spinner spinner, String message, TextView msgView) {
         boolean result = false;
@@ -256,6 +282,51 @@ public class RegisterActivity extends AppCompatActivity   {
         }
 
         // return validate result
+        return result;
+    }
+
+    // validate email format
+    private boolean validateEmailFormat(String str, String message) {
+        boolean result = false;
+        if(!str.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*+@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")){
+            result = false;
+            msgEmail.setText(message);
+        } else {
+            result = true;
+            ((TextView)findViewById(R.id.register_email)).setBackgroundColor(getResources().getColor(R.color.whiteBg));
+        }
+        return result;
+    }
+
+    // valdate password format
+    private boolean validatePwdFormat(String str, String message) {
+        boolean result = false;
+        // check if the string is a strong password. At least 8 length. Contains at least 1 special character, 1 lower&upper letter, and 1 number
+        if(!str.trim().matches("^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8}$")){
+            result = false;
+            msgPwd.setText(message);
+        } else {
+            result = true;
+        }
+        return result;
+    }
+
+    // validate dob value
+    private boolean validateDobValue (String date, String message) {
+        boolean result = false;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_FORMAT);
+        try {
+            Date dateFromUI = dateFormat.parse(date);
+            if(dateFromUI.after(Calendar.getInstance().getTime())){
+                result = false;
+                msgDOB.setText(message);
+            } else {
+                result = true;
+            }
+        } catch (ParseException ex) {
+            result = false;
+            msgDOB.setText("Your input is not a valid date. Valid format: yyyy-MM-dd");
+        }
         return result;
     }
 

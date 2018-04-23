@@ -7,20 +7,56 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import smartER.webservice.SmartERUserWebservice;
 
 public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
-    @Override
-    protected void onPreExecute() {
+    // user name and email variables
+    private String username;
+    private String email;
+    // email and username textviews
+    private TextView tvUserName;
+    private TextView tvEmail;
+    // register activity
+    private Activity activity;
 
+    public RegisterFactorial(Activity activity, TextView tvUserName, TextView tvEmail) {
+        this.activity = activity;
+        this.tvUserName = tvUserName;
+        this.tvEmail = tvEmail;
+        this.username = tvUserName.getText().toString();
+        this.email = tvEmail.getText().toString();
     }
 
     protected Void doInBackground(Void... params) {
+        // check if email is already exist
+        try {
+            // get resident by email
+            JSONArray userWithSameEmail = SmartERUserWebservice.findUserByEmail(email);
+            // get resident by username
+            JSONArray userWithSameUsername = SmartERUserWebservice.findCredentialByUsername(username);
+
+            // check user with same email
+            if (userWithSameEmail.length() > 0) {
+                h.sendEmptyMessage(1);
+            } else if (userWithSameUsername.length() > 0) {
+                h.sendEmptyMessage(2);
+            } else if (userWithSameEmail.length() == 0 && userWithSameUsername.length() == 0) {
+                // if no user found with same email or username, can create new user
+
+            }
+        } catch (Exception ex) {
+            Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
+        }
 
         return null;
     }
@@ -38,9 +74,13 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
             if(msg.what == 0) {
 
             } else if(msg.what == 1) {
-
+                // if reisdent with same user exist in server db, server side validation not passed
+                tvEmail.setBackgroundColor(activity.getResources().getColor(R.color.errorBackgound));
+                ((TextView)activity.findViewById(R.id.lblEmailErrorMsg)).setText(activity.getResources().getString(R.string.register_email_exist_msg));
             } else {
-
+                // if reisdent with same user exist in server db, server side validation not passed
+                tvUserName.setBackgroundColor(activity.getResources().getColor(R.color.errorBackgound));
+                ((TextView)activity.findViewById(R.id.lblUserNameErrorMsg)).setText(activity.getResources().getString(R.string.register_username_exist_msg));
             }
 
         }
