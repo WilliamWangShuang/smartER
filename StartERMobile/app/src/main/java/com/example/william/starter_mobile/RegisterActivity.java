@@ -234,7 +234,7 @@ public class RegisterActivity extends AppCompatActivity   {
         result = validatePwdFormat(entity.getPwd(), getResources().getString(R.string.register_pwd_format_msg)) && result;
         // validate confirm pwd
         result = validateEmpty(entity.getRepeatPwd(), getResources().getString(R.string.register_confirm_pwd_msg), msgConfirmPwd) && result;
-
+        result = validateConfrimPwdLogic(entity.getPwd(), entity.getRepeatPwd(), getResources().getString(R.string.register_confirm_pwd_msg)) && result;
         return result;
     }
 
@@ -327,6 +327,20 @@ public class RegisterActivity extends AppCompatActivity   {
             result = false;
             msgDOB.setText("Your input is not a valid date. Valid format: yyyy-MM-dd");
         }
+        return result;
+    }
+
+    // validate confirm  pwd equal with pwd
+    private boolean validateConfrimPwdLogic (String pwd, String confirmPwd, String message) {
+        boolean result = false;
+
+        if (!pwd.equals(confirmPwd)) {
+            result = false;
+            msgConfirmPwd.setText(message);
+        } else {
+            result = true;
+        }
+
         return result;
     }
 
