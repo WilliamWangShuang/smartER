@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +35,10 @@ public class MainFragment extends Fragment {
     private TextView tvFirstName;
     // current temperature receiver
     private CurrentTempReceiver currentTempReceiver;
+    // textView for current total usage message
+    private TextView tvCurrentUsageTotal;
+    // image view
+    private ImageView imgUsage;
 
     @Nullable
     @Override
@@ -60,6 +65,10 @@ public class MainFragment extends Fragment {
         tvFirstName = getActivity().findViewById(R.id.home_firstName);
         // set first name
         tvFirstName.setText(SmartERMobileUtility.getFirstName());
+        // get usage total message textView
+        tvCurrentUsageTotal = getActivity().findViewById(R.id.tvUsageMsg);
+        // get usage image view
+        imgUsage = getActivity().findViewById(R.id.imgUsage);
 
         // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(getActivity());
@@ -71,6 +80,31 @@ public class MainFragment extends Fragment {
             }
         };
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
+
+        // define broadReceiver onReceive action to update view of currenet temperature timely
+        BroadcastReceiver currHourTotalUsageReceiver =  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int currentH = Calendar.getInstance().get(Calendar.HOUR);
+                int currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+                double totalUsage = intent.getExtras().getDouble("currHourTotalUsage");
+                // if peak time and weekday, set relevant appearance based on total usage. Otherwise, set positive appearance
+                if (1 <= currentDayOfWeek && currentDayOfWeek <= 7 && 9 <= currentH && currentH <= 22) {
+                    if (totalUsage > 1.5) {
+                        tvCurrentUsageTotal.setText(R.string.negative_msg);
+                        imgUsage.setImageResource(R.drawable.marker_red);
+                    } else {
+                        tvCurrentUsageTotal.setText(R.string.positive_msg);
+                        imgUsage.setImageResource(R.drawable.marker_green);
+                    }
+                } else{
+                    tvCurrentUsageTotal.setText(R.string.positive_msg);
+                    imgUsage.setImageResource(R.drawable.marker_green);
+                }
+            }
+        };
+        getActivity().registerReceiver(currHourTotalUsageReceiver, new IntentFilter("currHourTotalUsage"));
+
         // register click event to button sycn_one_data
         Button btnSyncOneData=(Button)getActivity().findViewById(R.id.btn_syncOneData);
         //registering with onclicklistener

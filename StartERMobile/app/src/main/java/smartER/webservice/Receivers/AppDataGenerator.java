@@ -43,7 +43,7 @@ public class AppDataGenerator extends BroadcastReceiver {
     // when this receiver receive the captured intent broadcasting to do the work in this onReceive method
     @Override
     public void onReceive(Context context, Intent intent) {
-        AppGenerateFactorial f = new AppGenerateFactorial();
+        AppGenerateFactorial f = new AppGenerateFactorial(context);
         f.execute();
     }
 }

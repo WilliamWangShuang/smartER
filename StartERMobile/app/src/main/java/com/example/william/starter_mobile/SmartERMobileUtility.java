@@ -120,10 +120,6 @@ public class SmartERMobileUtility extends Application {
         SmartERMobileUtility.resId = resId;
     }
 
-    public static String getAddress() {
-        return address;
-    }
-
     public static String getFirstName() {
         return firstName;
     }
@@ -207,14 +203,6 @@ public class SmartERMobileUtility extends Application {
         calendar.setTime(date);   // assigns calendar to given date
         int currentH = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
         return currentH;
-    }
-
-    public static String getSyncOneRecordResult() {
-        return syncOneRecordResult;
-    }
-
-    public static void setSyncOneRecordResult(String syncOneRecordResult) {
-        SmartERMobileUtility.syncOneRecordResult = syncOneRecordResult;
     }
 
     // get the resident usage info object based on latlng key in map

@@ -1,5 +1,7 @@
 package smartER.Factories;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -24,6 +26,14 @@ public class AppGenerateFactorial extends AsyncTask<Void, Void, Void> {
     private ArrayList<Integer> acWorkTime;
     // is continue work flag for washing machine used in thread
     private boolean isContinueWork;
+    // total usage for current hour
+    private double total;
+    // current context
+    Context mContext;
+
+    public AppGenerateFactorial(Context mContext) {
+        this.mContext = mContext;
+    }
 
     @Override
     protected void onPreExecute() {
@@ -56,6 +66,9 @@ public class AppGenerateFactorial extends AsyncTask<Void, Void, Void> {
         // load air conditioner data in array
         double currentHourACusage = acWorkTime.contains(currentH) && currTemp > 20.0 ? generateACHourlyUData() : 0.0;
 
+        // get total usage for current hour
+        total = currentHourFridgeUsage + currentHourWSUsage + currentHourACusage;
+
         // insert hourly usage into SQLite table
         DateFormat df = new SimpleDateFormat(Constant.DATE_FORMAT);
         long rowId = dbHelper.insertAppUsage(df.format(new Date()), currentH, currentHourFridgeUsage, currentHourWSUsage, currentHourACusage, (int)currTemp);
@@ -69,6 +82,9 @@ public class AppGenerateFactorial extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void result) {
         //mContext.sendBroadcast(new Intent("startGenerateAppDataSignal"));
         Log.d("SmartERDebug", "generate data for apps thread finish.");
+        Intent backToActivityIntent = new Intent("currHourTotalUsage");
+        backToActivityIntent.putExtra("currHourTotalUsage", total);
+        mContext.sendBroadcast(backToActivityIntent);
     }
 
     // Generate firdge hourly usage between 0.3 kwh and 0.8 kwh

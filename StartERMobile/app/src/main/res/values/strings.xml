@@ -42,6 +42,8 @@
     <string name="register_pwd_format_msg">Password at least has 8 length. Contains at least 1 special character, 1 lower and upper letter, and 1 number</string>
     <string name="register_confirm_pwd_msg">Confirm is different with password</string>
     <string name="welcome">Welcome </string>
+    <string name="positive_msg">Good Job! Keep doing that.</string>
+    <string name="negative_msg">Keep improving, Dude!</string>
 
     <string-array name="map_view_type_array">
         <item>daily</item>
