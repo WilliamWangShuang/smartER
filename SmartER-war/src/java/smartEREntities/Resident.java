@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Resident.findByEmail", query = "SELECT r FROM Resident r WHERE r.email = :email")
     , @NamedQuery(name = "Resident.findByMobile", query = "SELECT r FROM Resident r WHERE r.mobile = :mobile")
     , @NamedQuery(name = "Resident.findByNumberofresident", query = "SELECT r FROM Resident r WHERE r.numberofresident = :numberofresident")
+    , @NamedQuery(name = "Resident.findResIdByEmail", query = "SELECT r FROM Resident r WHERE r.email = :email")
     , @NamedQuery(name = "Resident.findByEnergyprovider", query = "SELECT r FROM Resident r WHERE r.energyprovider = :energyprovider")})
 public class Resident implements Serializable {
 
@@ -53,6 +54,7 @@ public class Resident implements Serializable {
     public static final String GET_BY_MOBILE = "Resident.findByMobile";
     public static final String GET_BY_NUMBER_OF_RESIDENT = "Resident.findByNumberofresident";
     public static final String GET_BY_PROVIDER = "Resident.findByEnergyprovider";
+    public final static String GET_RESID_BY_EMAIL = "Resident.findResIdByEmail";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

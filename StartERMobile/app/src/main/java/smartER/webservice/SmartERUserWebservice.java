@@ -12,8 +12,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import smartER.Factories.RegisterFactorial;
 
 public class SmartERUserWebservice {
     // get profile of current login user
@@ -110,6 +113,50 @@ public class SmartERUserWebservice {
             throw ex;
         }
         return result;
+    }
+
+    // post to server to store register user
+    public static boolean saveRegisterResident(RegisterFactorial.RegisterInfoUI registerInfoUI) throws JSONException, IOException, ParseException {
+        boolean isSuccessSave = false;
+        // construct resident json
+        JSONObject jsonResident = new JSONObject();
+        jsonResident.put(Constant.WS_KEY_ADDRESS, registerInfoUI.getAddress());
+        SimpleDateFormat f = new SimpleDateFormat(Constant.DATE_FORMAT);
+        SimpleDateFormat f1 = new SimpleDateFormat(Constant.SERVER_DATE_FORMAT);
+        jsonResident.put(Constant.WS_KEY_DOB, f1.format(f.parse(registerInfoUI.getDob())));
+        jsonResident.put(Constant.WS_KEY_EMAIL, registerInfoUI.getEmail());
+        jsonResident.put(Constant.WS_KEY_ENERGY_PROVIDER, registerInfoUI.getEnergyProvider());
+        jsonResident.put(Constant.WS_KEY_FIRST_NAME, registerInfoUI.getFirstName());
+        jsonResident.put(Constant.WS_KEY_SURE_NAME, registerInfoUI.getSureName());
+        jsonResident.put(Constant.WS_KEY_MOBILE, registerInfoUI.getPhone());
+        jsonResident.put(Constant.WS_KEY_NO_OF_RESIDENT, Integer.parseInt(registerInfoUI.getResidentNumber()));
+        jsonResident.put(Constant.WS_KEY_POSTCODE, Integer.parseInt(registerInfoUI.getPostcode()));
+        Log.d("SmartERDebug", "parsed resident json to post:" + jsonResident.toString());
+        // call ws to save
+        String saveResidentResult = webservice.postWebService(Constant.SAVE_RESIDENT_URL, jsonResident);
+        // if save resident successfully, start save credential
+        if (Constant.SUCCESS_MSG.equals(saveResidentResult)) {
+            // get new resid based on inerted resident's email
+            JSONArray jsonArray = webservice.requestWebServiceArray(Constant.FIND_USER_BY_EMAIL_WS + registerInfoUI.getEmail());
+            JSONObject residJson = (JSONObject)jsonArray.get(0);
+            // construct credential JSON
+            JSONObject credentialJson = new JSONObject();
+            credentialJson.put(Constant.WS_KEY_CREDENTIAL_PASSWORDHASH, SmartERMobileUtility.encryptPwd(registerInfoUI.getPwd()));
+            credentialJson.put(Constant.WS_KEY_RESID, residJson);
+            credentialJson.put(Constant.WS_KEY_CREDENTIAL_REGISTER_DATE, f1.format(Calendar.getInstance().getTime()));
+            credentialJson.put(Constant.WS_KEY_CREDENTIAL_USERNAME, registerInfoUI.getUserName());
+            Log.d("SmartERDebug", "parsed credential json to post:" + credentialJson.toString());
+            // call ws to save
+            String saveCredentialResult = webservice.postWebService(Constant.SAVE_CREDENTIAO_URL, credentialJson);
+
+            if (Constant.SUCCESS_MSG.equals(saveCredentialResult)) {
+                // set application level variable resid
+                SmartERMobileUtility.setResId(residJson.getInt(Constant.WS_KEY_RESID));
+                isSuccessSave = true;
+            }
+        }
+
+        return isSuccessSave;
     }
 
     // inner class working as entity class for user

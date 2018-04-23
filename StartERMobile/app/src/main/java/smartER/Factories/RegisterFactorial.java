@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+import com.mapquest.android.commoncore.marshalling.StringMarshaller;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,13 +29,18 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
     private TextView tvEmail;
     // register activity
     private Activity activity;
+    // domain entity
+    private RegisterFactorial.RegisterInfoUI registerInfoUI;
+    boolean isSucc;
 
-    public RegisterFactorial(Activity activity, TextView tvUserName, TextView tvEmail) {
+    public RegisterFactorial(Activity activity, TextView tvUserName, TextView tvEmail, RegisterFactorial.RegisterInfoUI registerInfoUI) {
+        this.registerInfoUI = registerInfoUI;
         this.activity = activity;
         this.tvUserName = tvUserName;
         this.tvEmail = tvEmail;
         this.username = tvUserName.getText().toString();
         this.email = tvEmail.getText().toString();
+        isSucc = false;
     }
 
     protected Void doInBackground(Void... params) {
@@ -52,7 +58,8 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
                 h.sendEmptyMessage(2);
             } else if (userWithSameEmail.length() == 0 && userWithSameUsername.length() == 0) {
                 // if no user found with same email or username, can create new user
-
+                isSucc = SmartERUserWebservice.saveRegisterResident(registerInfoUI);
+                h.sendEmptyMessage(0);
             }
         } catch (Exception ex) {
             Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
@@ -72,7 +79,22 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
     Handler h = new Handler() {
         public void handleMessage(Message msg){
             if(msg.what == 0) {
-
+                try {
+                    if (isSucc) {
+                        Toast.makeText(activity, "Register successfully.", Toast.LENGTH_LONG);
+                        // set resident info to application level
+                        SmartERMobileUtility.setAddress(registerInfoUI.getAddress());
+                        SmartERMobileUtility.setFirstName(registerInfoUI.getFirstName());
+                        // go to main activity
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        activity.startActivityForResult(intent, 1);Log.d("SmartERDebug", "3333333333333");
+                    } else {
+                        Toast.makeText(activity, "Register fail and try again.If not work, unintall this shit app.", Toast.LENGTH_LONG);
+                    }
+                } catch (Exception ex) {
+                    Log.e("SmartERDebug", SmartERMobileUtility.getExceptionInfo(ex));
+                    Toast.makeText(activity, "Register fail due to exception thrown. Try again. If not work, unintall this shit app.", Toast.LENGTH_LONG);
+                }
             } else if(msg.what == 1) {
                 // if reisdent with same user exist in server db, server side validation not passed
                 tvEmail.setBackgroundColor(activity.getResources().getColor(R.color.errorBackgound));

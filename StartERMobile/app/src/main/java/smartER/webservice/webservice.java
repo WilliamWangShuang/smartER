@@ -85,6 +85,64 @@ public class webservice {
         return resultJSONObj;
     }
 
+    // get a web service based on URL
+    public static String requestWebServicePlainText(String serviceUrl) throws IOException, JSONException {
+        disableConnectionReuseIfNecessary();
+
+        HttpURLConnection urlConnection = null;
+        String result = null;
+        int statusCode;
+        String exceptionJSON = "{%s:%s}";
+        String responseFromWS = "";
+
+        try {
+            // create connection
+            URL urlToRequest = new URL(serviceUrl);
+            urlConnection = (HttpURLConnection)urlToRequest.openConnection();
+            // set content type to JSON
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            // handle issues
+            statusCode = urlConnection.getResponseCode();
+
+            // handle different web service response status
+            switch (statusCode) {
+                case HttpURLConnection.HTTP_UNAUTHORIZED:
+                    result = String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_401);
+                    break;
+                case HttpURLConnection.HTTP_NOT_FOUND:
+                    result = String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_404);
+                    break;
+                case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                    result = String.format(String.format(exceptionJSON, Constant.WS_KEY_EXCEPTION, Constant.MSG_500));
+                    break;
+                case HttpURLConnection.HTTP_OK:
+                    // get response stream from web service
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    // put the stream content into string
+                    result = getResponseText(in);
+                    break;
+                default:
+                    break;
+            }
+        } catch (MalformedURLException e) {
+            // URL is invalid
+            throw e;
+        } catch (SocketTimeoutException e) {
+            // data retrieval or connection timed out
+            throw e;
+        } catch (IOException e) {
+            // could not read response body
+            // (could not create input stream)
+            throw e;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        return result;
+    }
+
     // get a json array by ws URL
     public static JSONArray requestWebServiceArray(String serviceUrl) throws IOException, JSONException {
         disableConnectionReuseIfNecessary();

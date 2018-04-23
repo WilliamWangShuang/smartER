@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity   {
                 Log.d("SmartERDebug", "UI fields validation:" + isDataValidate);
                 // if UI validate passed, do server side validation and run logic flow
                 if (isDataValidate) {
-                    RegisterFactorial registerFactorial = new RegisterFactorial(RegisterActivity.this, (TextView)findViewById(R.id.register_username), (TextView)findViewById(R.id.register_email));
+                    RegisterFactorial registerFactorial = new RegisterFactorial(RegisterActivity.this, (TextView)findViewById(R.id.register_username), (TextView)findViewById(R.id.register_email), registerInfoUI);
                     registerFactorial.execute();
                 }
             }

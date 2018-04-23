@@ -4,6 +4,8 @@ public class Constant {
     // web service URL
     public static String WEATHER_WS_URL = "http://api.openweathermap.org/data/2.5/weather?id=7839805&APPID=8a0223cc559ebf08920e4cbf1279facd";
     public static String SMARTER_WS_ELECTRICITY_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity";
+    public static String SAVE_RESIDENT_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident";
+    public static String SAVE_CREDENTIAO_URL ="http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential";
     public static String FIND_USER_BY_ID_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/";
     public static String FIND_USER_BY_EMAIL_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/findByEmail/";
     public static String FIND_CRENDENTIAL_BY_USERNAME_WS = " http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential/findByUserName/";
@@ -60,4 +62,9 @@ public class Constant {
     public static String WS_KEY_MAP_LNG = "lng";
     public static String WS_KEY_MAP_TOTAL_USAGE = "usage";
     public static String WS_KEY_MAP_TIME = "time";
+
+    // json key for credential
+    public static String WS_KEY_CREDENTIAL_PASSWORDHASH = "passwordhash";
+    public static String WS_KEY_CREDENTIAL_REGISTER_DATE = "registrationdate";
+    public static String WS_KEY_CREDENTIAL_USERNAME = "username";
 }

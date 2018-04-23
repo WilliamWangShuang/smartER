@@ -201,6 +201,17 @@ public class ResidentFacadeREST extends AbstractFacade<Resident> {
         return result;
     }
         
+    
+    @GET
+    @Path("findResIdByEmail/{email}")
+    @Produces({MediaType.TEXT_PLAIN})
+    public int findResIdByEmail(@PathParam("email") String email){
+        Query query = em.createNamedQuery(Resident.GET_RESID_BY_EMAIL);
+        query.setParameter("email", email);
+        Resident queryResult = (Resident)query.getResultList().get(0);
+        return queryResult == null ? -1 : queryResult.getResid();
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;

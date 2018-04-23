@@ -87,7 +87,6 @@ public class MapFragmentFactorial extends AsyncTask<Void, Void, MapWebservice.Re
 
     @Override
     protected void onPostExecute(MapWebservice.ResidentMapEntity result) {
-        // TODO: get my location
         myLocation = new LatLng();
         myLocation.setLatitude(SmartERMobileUtility.getLatitude());
         myLocation.setLongitude(SmartERMobileUtility.getLongtiude());
