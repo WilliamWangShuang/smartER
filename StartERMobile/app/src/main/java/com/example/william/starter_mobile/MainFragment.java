@@ -70,6 +70,9 @@ public class MainFragment extends Fragment {
         // get usage image view
         imgUsage = getActivity().findViewById(R.id.imgUsage);
 
+        // display positive or negative usage info message when switching between pages
+        displayPosOrNegUsageInfo(SmartERMobileUtility.getTotalCurrHourUsage());
+
         // Set background thread to get update temperature
         currentTempReceiver = new CurrentTempReceiver(getActivity());
         // define broadReceiver onReceive action to update view of currenet temperature timely
@@ -81,26 +84,12 @@ public class MainFragment extends Fragment {
         };
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter("currTempIntentBroadcasting"));
 
-        // define broadReceiver onReceive action to update view of currenet temperature timely
+        // define broadReceiver onReceive action to update usage info of currenet hour when new hour data generated
         BroadcastReceiver currHourTotalUsageReceiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int currentH = Calendar.getInstance().get(Calendar.HOUR);
-                int currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
                 double totalUsage = intent.getExtras().getDouble("currHourTotalUsage");
-                // if peak time and weekday, set relevant appearance based on total usage. Otherwise, set positive appearance
-                if (1 <= currentDayOfWeek && currentDayOfWeek <= 7 && 9 <= currentH && currentH <= 22) {
-                    if (totalUsage > 1.5) {
-                        tvCurrentUsageTotal.setText(R.string.negative_msg);
-                        imgUsage.setImageResource(R.drawable.marker_red);
-                    } else {
-                        tvCurrentUsageTotal.setText(R.string.positive_msg);
-                        imgUsage.setImageResource(R.drawable.marker_green);
-                    }
-                } else{
-                    tvCurrentUsageTotal.setText(R.string.positive_msg);
-                    imgUsage.setImageResource(R.drawable.marker_green);
-                }
+                displayPosOrNegUsageInfo(totalUsage);
             }
         };
         getActivity().registerReceiver(currHourTotalUsageReceiver, new IntentFilter("currHourTotalUsage"));
@@ -116,4 +105,25 @@ public class MainFragment extends Fragment {
             }
         });
     }
+
+    private void displayPosOrNegUsageInfo(Double currHourUsage) {
+        int currentH = Calendar.getInstance().get(Calendar.HOUR);
+        int currentDayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        double totalUsage = currHourUsage;
+
+        // if peak time and weekday, set relevant appearance based on total usage. Otherwise, set positive appearance
+        if (1 <= currentDayOfWeek && currentDayOfWeek <= 7 && 9 <= currentH && currentH <= 22) {
+            if (totalUsage > 1.5) {
+                tvCurrentUsageTotal.setText(R.string.negative_msg);
+                imgUsage.setImageResource(R.drawable.negative);
+            } else {
+                tvCurrentUsageTotal.setText(R.string.positive_msg);
+                imgUsage.setImageResource(R.drawable.positive);
+            }
+        } else{
+            tvCurrentUsageTotal.setText(R.string.positive_msg);
+            imgUsage.setImageResource(R.drawable.positive);
+        }
+    }
+
 }

@@ -83,6 +83,8 @@ public class AppGenerateFactorial extends AsyncTask<Void, Void, Void> {
         //mContext.sendBroadcast(new Intent("startGenerateAppDataSignal"));
         Log.d("SmartERDebug", "generate data for apps thread finish.");
         Intent backToActivityIntent = new Intent("currHourTotalUsage");
+        // set application-level total current hour usage so that positive/negative info can be shown on screen when switching between pages
+        SmartERMobileUtility.setTotalCurrHourUsage(total);
         backToActivityIntent.putExtra("currHourTotalUsage", total);
         mContext.sendBroadcast(backToActivityIntent);
     }

@@ -55,6 +55,8 @@ public class SmartERMobileUtility extends Application {
     private static int postcode;
     // country
     private static String country;
+    // total current hour usage
+    private static double totalCurrHourUsage;
 
     // format exception message
     public static String getExceptionInfo(Exception ex) {
@@ -77,6 +79,14 @@ public class SmartERMobileUtility extends Application {
     public static int getRandomIntegerNumber(int minValue, int maxValue){
         // return random number in range
         return  random.nextInt((maxValue - minValue) + 1) + minValue;
+    }
+
+    public static double getTotalCurrHourUsage() {
+        return totalCurrHourUsage;
+    }
+
+    public static void setTotalCurrHourUsage(double totalCurrHourUsage) {
+        SmartERMobileUtility.totalCurrHourUsage = totalCurrHourUsage;
     }
 
     // getters and setters
