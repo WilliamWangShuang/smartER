@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.home_fragment) {
             // go back home page
             nextFragment = new MainFragment();
+        }else if (id == R.id.linechart) {
+            // go back home page
+            nextFragment = new LineChartFragment();
         }
 
         FragmentManager fragmentManager = getFragmentManager();

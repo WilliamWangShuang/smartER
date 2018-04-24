@@ -80,4 +80,30 @@ public class SmartERUsageWebservice {
 
         return result;
     }
+
+    // call RESTful web serice to get all hourly usage for one resident for a specific date
+    public static List<JSONObject> getHourlyUsageByResIdAndDate(int resid, Date date) throws IOException, JSONException {
+        List<JSONObject> result = new ArrayList<>();
+
+        // format date to string
+        SimpleDateFormat f = new SimpleDateFormat(Constant.DATE_FORMAT);
+        String urlParamDate = f.format(date);
+
+        // construct url
+        StringBuilder sBuilder = new StringBuilder(Constant.FIND_HOURLY_USAGE_BY_RESID_DATE);
+        sBuilder.append(resid).append("/").append(urlParamDate).append("/").append(Constant.MAP_VIEW_HOURLY);
+        // call ws to get query result
+        JSONArray jsonArray = webservice.requestWebServiceArray(sBuilder.toString());
+
+        // construct return result
+        // construct return list
+        int position = 0;
+        while (position < jsonArray.length()) {
+            JSONObject jsonObj = jsonArray.getJSONObject(position);
+            result.add(jsonObj);
+            position ++;
+        }
+
+        return result;
+    }
 }

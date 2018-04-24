@@ -14,4 +14,29 @@
             android:title="Map" />
     </group>
 
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/report"
+            android:title="Report" >
+
+            <menu>
+                <item
+                    android:id="@+id/linechart"
+                    android:icon="@drawable/line_chart"
+                    android:title="Line Chart">
+                </item>
+                <item
+                    android:id="@+id/barchart"
+                    android:icon="@drawable/bar_chart"
+                    android:title="Bar Chart">
+                </item>
+                <item
+                    android:id="@+id/piechart"
+                    android:icon="@drawable/pie_chart"
+                    android:title="Pie Chart">
+                </item>
+            </menu>
+        </item>
+    </group>
+
 </menu>
