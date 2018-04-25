@@ -107,7 +107,7 @@ public class SmartERUsageWebservice {
         return result;
     }
 
-    // call RESTful web serice to get all monthly usage for one resident for a specific month, current year
+    // call RESTful web service to get all monthly usage for one resident for a specific month, current year
     public static List<JSONObject> getMonthlyUsageByResIdAndMonth(int resid, int month) throws IOException, JSONException {
         List<JSONObject> result = new ArrayList<>();
 
@@ -125,6 +125,20 @@ public class SmartERUsageWebservice {
             result.add(jsonObj);
             position ++;
         }
+
+        return result;
+    }
+
+    // call RESTful ws to get total usage in 24 hours for each appliance by resid and date
+    public static JSONObject getAppUsageByResIdAndDate(int resid, String date)  throws IOException, JSONException {
+        JSONObject result = new JSONObject();
+
+        // create request url
+        StringBuilder sp = new StringBuilder(Constant.FIND_APP_USAGE_BY_RESID_DATE_URL);
+        sp.append(resid).append("/").append(date);
+        Log.d("SmartERDebug", "getAppUsageByResIdAndDate url:" + sp.toString());
+        //call ws to get request result
+        result = webservice.requestWebService(sp.toString());
 
         return result;
     }

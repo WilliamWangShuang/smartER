@@ -8,34 +8,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.utils.Utils;
+
+import smartER.Factories.BarChartFactorial;
 import smartER.Factories.LineChartFactoiral;
 
-public class LineChartFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-    private View vLineChartFragment;
+public class BarChartFragment  extends Fragment implements AdapterView.OnItemSelectedListener {
+    private View vBarChartFragment;
     private Spinner viewType;
-    private LineChart chart;
+    private BarChart chart;
 
     @Nullable
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        vLineChartFragment = inflater.inflate(R.layout.line_chart_fragment, container, false);
-        Utils.init(vLineChartFragment.getContext());
+        vBarChartFragment = inflater.inflate(R.layout.bar_chart_fragement, container, false);
+        Utils.init(vBarChartFragment.getContext());
         // get chart from page
-        chart =(LineChart) vLineChartFragment.findViewById(R.id.linechart);
+        chart =(BarChart) vBarChartFragment.findViewById(R.id.barchart);
 
         // get spinner of view type from page
-        viewType = (Spinner)vLineChartFragment.findViewById(R.id.line_chart_spinner);
+        viewType = (Spinner)vBarChartFragment.findViewById(R.id.bar_chart_spinner);
         // set listener of spinner
         viewType.setOnItemSelectedListener(this);
-        return vLineChartFragment;
+        return vBarChartFragment;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
-        lineChartFactoiral.execute();
+        BarChartFactorial barChartFactoiral = new BarChartFactorial(getActivity(), chart, Constant.MAP_VIEW_DAILY);
+        barChartFactoiral.execute();
     }
 
     @Override
@@ -45,14 +47,14 @@ public class LineChartFragment extends Fragment implements AdapterView.OnItemSel
         //MapFragmentFactorial mapFragmentFactorial = null;
         // change map view according to the view type selected
         if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
-            LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_HOURLY);
-            lineChartFactoiral.execute();
+            BarChartFactorial barChartFactoiral = new BarChartFactorial(getActivity(), chart, Constant.MAP_VIEW_HOURLY);
+            barChartFactoiral.execute();
         } else if(Constant.MAP_VIEW_DAILY.equals(viewType)) {
-            LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
-            lineChartFactoiral.execute();
+            BarChartFactorial barChartFactoiral = new BarChartFactorial(getActivity(), chart, Constant.MAP_VIEW_DAILY);
+            barChartFactoiral.execute();
         } else {
-            LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
-            lineChartFactoiral.execute();
+            BarChartFactorial barChartFactoiral = new BarChartFactorial(getActivity(), chart, Constant.MAP_VIEW_DAILY);
+            barChartFactoiral.execute();
         }
         //mapFragmentFactorial.execute();
     }

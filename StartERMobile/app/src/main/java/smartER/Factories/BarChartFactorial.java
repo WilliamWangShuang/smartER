@@ -9,9 +9,12 @@ import android.os.Message;
 import android.util.Log;
 import com.example.william.starter_mobile.Constant;
 import com.example.william.starter_mobile.SmartERMobileUtility;
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -27,15 +30,16 @@ import java.util.List;
 import smartER.webservice.ChartWebservice;
 import smartER.webservice.SmartERUsageWebservice;
 
-public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservice.ChartUsageEntity>> {
-    private LineChart chart;
+public class BarChartFactorial extends AsyncTask<Void, Void, List<ChartWebservice.ChartUsageEntity>> {
+
+    private BarChart chart;
     private String viewType;
     // usages entity, used when view type is hourly
     private List<ChartWebservice.ChartUsageEntity> usageEntities;
     // context
     private Context context;
 
-    public LineChartFactoiral(Context context, LineChart chart, String viewType) {
+    public BarChartFactorial(Context context, BarChart chart, String viewType) {
         this.context = context;
         this.chart = chart;
         this.viewType = viewType;
@@ -48,7 +52,7 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
 
     @Override
     protected List<ChartWebservice.ChartUsageEntity> doInBackground(Void... params) {
-        Log.d("SmartERDebug", "****Set line chart****");
+        Log.d("SmartERDebug", "****Set bar chart****");
         // get data by ws
         try {
             // get current user resid
@@ -122,20 +126,18 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
     }
 
     // draw line chart
-    private void drawLineChart(List<ChartWebservice.ChartUsageEntity> usageEntities) {
-        List<Entry> entries1 = new ArrayList<>();
-        List<Entry> entries2 = new ArrayList<>();
+    private void drawBarChart(List<ChartWebservice.ChartUsageEntity> usageEntities) {
+        ArrayList<BarEntry> entries1 = new ArrayList<BarEntry>();
+
         // set x-axis size
         int[] xAxis = new int[usageEntities.size()];
         // set y-axis size
         double[] yAxis1 = new double[usageEntities.size()];
-        double[] yAxis2 = new double[usageEntities.size()];
 
         // create x,y-axis values
         for (int i = 0; i < usageEntities.size(); i++) {
             xAxis[i] = Constant.MAP_VIEW_HOURLY.equals(viewType) ? usageEntities.get(i).getHour() : Integer.parseInt(usageEntities.get(i).getDate());
             yAxis1[i] = usageEntities.get(i).getTotalUsage();
-            yAxis2[i] = usageEntities.get(i).getTemperature();
         }
 
         //set x-axis values
@@ -146,11 +148,10 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
             //set x-axis values
             xValues[i] = "" + xAxis[i];
             //set node
-            entries1.add(new Entry(xAxis[i], (float)yAxis1[i]));
-            entries2.add(new Entry(xAxis[i], (float)yAxis2[i]));
+            entries1.add(new BarEntry(xAxis[i], (float)yAxis1[i]));
         }
 
-        LineData lineData = null;
+        BarData d  = null;
         if (xAxis.length > 0) {
             //implementing IAxisValueFormatter interface to show hour values not as float/decimal
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
@@ -173,36 +174,22 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
             xAxisFromChart.setPosition(XAxis.XAxisPosition.BOTTOM);
 
             // initialize left
-            LineDataSet dataSet1 = new LineDataSet(entries1, "This is left Y");
-            dataSet1.setColor(Color.rgb(240, 238, 70));
-            dataSet1.setLineWidth(2.5f);
-            dataSet1.setCircleColor(Color.rgb(240, 238, 70));
-            dataSet1.setCircleRadius(5f);
-            dataSet1.setFillColor(Color.rgb(240, 238, 70));
-            dataSet1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            dataSet1.setDrawValues(true);
-            dataSet1.setValueTextSize(10f);
-            dataSet1.setValueTextColor(Color.rgb(240, 238, 70));
+            BarDataSet set1 = new BarDataSet(entries1, "This is left Y");
+            set1.setColor(Color.rgb(60, 220, 78));
+            set1.setValueTextColor(Color.rgb(60, 220, 78));
+            set1.setValueTextSize(10f);
+            set1.setAxisDependency(chart.getAxisLeft().getAxisDependency().LEFT);
 
-            // initialize right
-            LineDataSet dataSet2 = new LineDataSet(entries2, "This is right Y");
-            dataSet1.setColor(Color.rgb(100, 129, 35));
-            dataSet1.setLineWidth(2.5f);
-            dataSet1.setCircleColor(Color.rgb(120, 128, 35));
-            dataSet1.setCircleRadius(5f);
-            dataSet1.setFillColor(Color.rgb(120, 129, 35));
-            dataSet1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            dataSet1.setDrawValues(true);
-            dataSet1.setValueTextSize(10f);
-            dataSet1.setValueTextColor(Color.rgb(120, 129, 35));
 
-            dataSet1.setAxisDependency(chart.getAxisLeft().getAxisDependency());
-            dataSet2.setAxisDependency(chart.getAxisRight().getAxisDependency());
-            // add left and right Y-axis dataset
-            lineData = new LineData(dataSet1, dataSet2);
+            float groupSpace = 0.06f;
+            float barSpace = 0.02f;
+            float barWidth = 0.15f;
+            d = new BarData(set1);
+            d.setBarWidth(barWidth);
         }
+
         // set dataset
-        chart.setData(lineData);
+        chart.setData(d);
         chart.setNoDataText("No enough data to generate Line chart. Please try tomorrow for daily view, or next hour for houly view.");
         chart.notifyDataSetChanged();
         chart.postInvalidate();
@@ -214,7 +201,7 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
         public void handleMessage(Message msg){
             if(msg.what == 0) {
                 // draw the line chart
-                drawLineChart(usageEntities);
+                drawBarChart(usageEntities);
             } else {
 
             }

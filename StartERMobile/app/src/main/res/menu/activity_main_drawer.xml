@@ -21,17 +21,17 @@
 
             <menu>
                 <item
-                    android:id="@+id/linechart"
+                    android:id="@+id/linechart_fragment"
                     android:icon="@drawable/line_chart"
                     android:title="Line Chart">
                 </item>
                 <item
-                    android:id="@+id/barchart"
+                    android:id="@+id/barchart_fragment"
                     android:icon="@drawable/bar_chart"
                     android:title="Bar Chart">
                 </item>
                 <item
-                    android:id="@+id/piechart"
+                    android:id="@+id/piechart_fragment"
                     android:icon="@drawable/pie_chart"
                     android:title="Pie Chart">
                 </item>

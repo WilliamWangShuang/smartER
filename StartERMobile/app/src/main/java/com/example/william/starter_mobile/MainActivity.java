@@ -103,9 +103,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.home_fragment) {
             // go back home page
             nextFragment = new MainFragment();
-        }else if (id == R.id.linechart) {
-            // go back home page
+        } else if (id == R.id.linechart_fragment) {
+            // go line chart page
             nextFragment = new LineChartFragment();
+        } else if (id == R.id.barchart_fragment) {
+            // go bar char page
+            nextFragment = new BarChartFragment();
+        } else if (id == R.id.piechart_fragment) {
+            // go pie chart
+            nextFragment = new PieChartFragment();
         }
 
         FragmentManager fragmentManager = getFragmentManager();

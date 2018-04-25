@@ -10,6 +10,7 @@ public class Constant {
     public static String FIND_USER_BY_ID_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/";
     public static String FIND_USER_BY_EMAIL_WS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident/findByEmail/";
     public static String FIND_CRENDENTIAL_BY_USERNAME_WS = " http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential/findByUserName/";
+    public static String FIND_APP_USAGE_BY_RESID_DATE_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findTotalUsageForEachAppIn24H/";
     public static String FIND_ALL_USERS = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.resident";
     public static String CREATE_MULTIPLE_DATA_URL = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/createMulitple";
     public static String MAP_WS_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=HqENWLsTVnZCbCt0w8oWyn7NsAK7zVxp&thumbMaps=false&location=";
@@ -58,6 +59,9 @@ public class Constant {
     public static String WS_KEY_USAGE_DATE = "usagedate";
     public static String WS_KEY_USAGE_HOUR = "usagehour";
     public static String WS_KEY_DATE = "date";
+    public static String WS_KEY_AC_DAY_SUM = "aircon";
+    public static String WS_KEY_WM_DAY_SUM = "washingmachine";
+    public static String WS_KEY_FRIDGE_DAY_SUM = "fridge";
 
     // json key for map ws
     public static String WS_KEY_MAP_RESULT = "results";
@@ -73,4 +77,9 @@ public class Constant {
     public static String WS_KEY_CREDENTIAL_PASSWORDHASH = "passwordhash";
     public static String WS_KEY_CREDENTIAL_REGISTER_DATE = "registrationdate";
     public static String WS_KEY_CREDENTIAL_USERNAME = "username";
+
+    // label
+    public static String LABEL_FRIDGE = "Fridge";
+    public static String LABEL_WM = "Washing machine";
+    public static String LABEL_AC = "Air conditioner";
 }

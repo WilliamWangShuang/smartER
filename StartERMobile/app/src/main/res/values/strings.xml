@@ -44,6 +44,7 @@
     <string name="welcome">Welcome </string>
     <string name="positive_msg">Good Job! Keep doing that.</string>
     <string name="negative_msg">Keep improving, Dude!</string>
+    <string name="pie_chart_date_selector">Select a date</string>
 
     <string-array name="map_view_type_array">
         <item>daily</item>
