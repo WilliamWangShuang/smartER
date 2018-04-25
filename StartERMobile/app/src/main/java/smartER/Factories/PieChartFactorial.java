@@ -101,18 +101,6 @@ public class PieChartFactorial extends AsyncTask<Void, Void, Void> {
         chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
     }
 
-    private SpannableString generateCenterSpannableText() {
-        SpannableString s = new SpannableString("SmartER Pie Chart");
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
-        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
-
-        return s;
-    }
-
     private void setData(JSONObject json, float range) throws JSONException {
         float mult = range;
         ArrayList<PieEntry> entries = new ArrayList<>();
