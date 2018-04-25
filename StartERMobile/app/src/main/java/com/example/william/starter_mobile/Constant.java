@@ -17,6 +17,7 @@ public class Constant {
     public static String MAP_WS_CHOOSE_VIEW = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findDailyOrHourlyUsageForAll/";
     public static String FIND_USER_CREDENTIAL = " http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.credential/findByUserNamePassword/";
     public static String FIND_HOURLY_USAGE_BY_RESID_DATE = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findDailyOrHourlyUsage/";
+    public static String FIND_MONTHLY_USAGE_BY_RESID_MONTH = "http://10.0.2.2:8080/SmartER-war/webresources/smarterentities.electricity/findMonthlyUsage/";
     public static String MAP_WS_LOCATION_URL_PARAM = "&location=";
     public static String MAP_WS_POSTCODE_URL_PARAM = "&postalCode=";
 

@@ -1,10 +1,12 @@
 package smartER.DAL;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import smartEREntities.DailySumInfo;
 import smartEREntities.Electricity;
 
 /**
@@ -55,6 +57,44 @@ public class SmartERTools {
         } catch (Exception ex) {
             throw ex;
         }
+        return usageList;
+    }
+    
+    // Find monthly usage
+    public static List<Electricity> getUsageByResidAndMonth (int resid, int month, EntityManager em) throws Exception {
+        List<Electricity> usageList = null;
+        try {
+            // get min and max day
+            Calendar cal = Calendar.getInstance();
+            int currYear = cal.get(Calendar.YEAR);
+            int realMonth = month - 1;
+            cal.set(currYear, realMonth, 1);
+            SimpleDateFormat f = new SimpleDateFormat(Constant.DATE_FORMAT);
+            Date mindate = f.parse(f.format(cal.getTime()));
+            int maxDay;
+            if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
+                maxDay = 31;
+            } else if ( month == 4 || month == 6 || month == 9 || month == 11) {
+                maxDay = 30;
+            } else {
+                if (currYear % 4 == 0)
+                    maxDay = 29;
+                else
+                    maxDay = 28;
+            }
+            // get max date
+            cal.set(currYear, realMonth, maxDay);
+            Date maxdate = f.parse(f.format(cal.getTime()));
+                        
+            Query query = em.createNamedQuery(Electricity.GET_BY_RESID_MONTH);
+            query.setParameter("resId", resid);
+            query.setParameter("minday", mindate);
+            query.setParameter("maxday", maxdate);
+            usageList = query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        }
+        
         return usageList;
     }
 

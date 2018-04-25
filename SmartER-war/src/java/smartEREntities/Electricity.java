@@ -41,7 +41,8 @@ import smartER.DAL.SmartERTools;
     , @NamedQuery(name = "Electricity.findByResIdDate", query = "SELECT e FROM Electricity e WHERE e.resid.resid = :resId AND e.usagedate = :usagedate")
     , @NamedQuery(name = "Electricity.findByDate", query = "SELECT e FROM Electricity e WHERE e.usagedate = :usagedate ORDER BY e.resid")
     , @NamedQuery(name = "Electricity.findByEmailProvider", query = "SELECT e FROM Electricity e WHERE e.resid.email = :email AND e.resid.energyprovider = :provider")
-    , @NamedQuery(name = "Electricity.findByDateHour", query = "SELECT e FROM Electricity e WHERE e.usagedate = :usagedate AND e.usagehour = :usagehour")})
+    , @NamedQuery(name = "Electricity.findByDateHour", query = "SELECT e FROM Electricity e WHERE e.usagedate = :usagedate AND e.usagehour = :usagehour")
+    , @NamedQuery(name = "Electricity.findByResIdAndMonth", query = "SELECT e FROM Electricity e WHERE e.resid.resid = :resId AND e.usagedate >= :minday AND e.usagedate <= :maxday")})
 public class Electricity implements Serializable, Comparable<Electricity> {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +59,7 @@ public class Electricity implements Serializable, Comparable<Electricity> {
     public final static String GET_BY_DATE_HOUR = "Electricity.findByDateHour";
     public final static String GET_BY_RESID_DATE = "Electricity.findByResIdDate";
     public final static String GET_BY_DATE = "Electricity.findByDate";
+    public final static String GET_BY_RESID_MONTH = "Electricity.findByResIdAndMonth";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -71,17 +71,17 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
             //Calendar cal = Calendar.getInstance();
             //cal.add(Calendar.MONTH, -1);
             //int lastMonth = cal.get(Calendar.MONTH);
-            Calendar calMonth = new GregorianCalendar(2018,2,3);
-            int lastMonth = calMonth.get(Calendar.MONTH);
+            int lastMonth = 3;
 
             // construct usage entities according to view type
             if (Constant.MAP_VIEW_HOURLY.equals(viewType)) {
                 // construct data entities to provide resource for line chart.
                 constructHoulyUsageEntities(resid, yesterday);
             } else if (Constant.MAP_VIEW_DAILY.equals(viewType)) {
-
+                constructDailyUsageEntities(resid, lastMonth);
             } else {
-
+                // construct data entities to provide resource for line chart.
+                constructDailyUsageEntities(resid, lastMonth);
             }
 
         } catch (Exception ex) {
@@ -96,6 +96,21 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
         h.sendEmptyMessage(0);
     }
 
+
+    private void constructDailyUsageEntities(int resid, int month) throws IOException, JSONException {
+        // get hourly usages
+        List<JSONObject> allMonthlyUsage = SmartERUsageWebservice.getMonthlyUsageByResIdAndMonth(resid, month);
+        usageEntities = new ArrayList<>();
+
+        for (JSONObject jsonObj : allMonthlyUsage) {
+            int hour = -1;
+            double totalUsage = jsonObj.getDouble(Constant.WS_KEY_MAP_TOTAL_USAGE);
+            int temperature = jsonObj.getInt(Constant.WS_KEY_TEMPERATURE);
+            String date = jsonObj.getString(Constant.WS_KEY_DATE);
+            ChartWebservice.ChartUsageEntity entity = new ChartWebservice.ChartUsageEntity(date, hour, totalUsage, temperature);
+            usageEntities.add(entity);
+        }
+    }
 
     // construct data entities to provide resource for line chart.
     private void constructHoulyUsageEntities(int resid, Date yesterday) throws IOException, JSONException {
@@ -125,29 +140,34 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
 
         // create x,y-axis values
         for (int i = 0; i < usageEntities.size(); i++) {
-            xAxis[i] = usageEntities.get(i).getHour();
+            xAxis[i] = Constant.MAP_VIEW_HOURLY.equals(viewType) ? usageEntities.get(i).getHour() : Integer.parseInt(usageEntities.get(i).getDate());
             yAxis1[i] = usageEntities.get(i).getTotalUsage();
             yAxis2[i] = usageEntities.get(i).getTemperature();
         }
 
         //set x-axis values
-        final String[] hours = new String[xAxis.length];
+        final String[] xValues = new String[xAxis.length];
 
         // set each node on chart
         for (int i = 0; i < xAxis.length; i++){
             //set x-axis values
-            hours[i] = "" + xAxis[i];
+            xValues[i] = "" + xAxis[i];
             //set node
             entries1.add(new Entry(xAxis[i], (float)yAxis1[i]));
             entries2.add(new Entry(xAxis[i], (float)yAxis2[i]));
         }
 
-        if(entries1.size() >= 3 && entries2.size() >= 3) {
+        LineData lineData = null;
+        if (xAxis.length > 0) {
             //implementing IAxisValueFormatter interface to show hour values not as float/decimal
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    return hours[(int)value];
+                    int intValue = (int)value;
+                    if (xValues.length > intValue && intValue > 0)
+                        return xValues[intValue];
+                    else
+                        return "";
                 }
             };
 
@@ -186,15 +206,13 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
             dataSet1.setAxisDependency(chart.getAxisLeft().getAxisDependency());
             dataSet2.setAxisDependency(chart.getAxisRight().getAxisDependency());
             // add left and right Y-axis dataset
-            LineData lineData = new LineData(dataSet1, dataSet2);
-            // set dataset
-            chart.setData(lineData);
-
-            chart.notifyDataSetChanged();
-            chart.postInvalidate();
-        } else {
-            Toast.makeText(context, "No enough data to generate Line chart. Please try tomorrow.", Toast.LENGTH_LONG);
+            lineData = new LineData(dataSet1, dataSet2);
         }
+        // set dataset
+        chart.setData(lineData);
+        chart.setNoDataText("No enough data to generate Line chart. Please try tomorrow for daily view, or next hour for houly view.");
+        chart.notifyDataSetChanged();
+        chart.postInvalidate();
     }
 
     // create a handler to toast message on main thread according to the post result
@@ -205,7 +223,7 @@ public class LineChartFactoiral extends AsyncTask<Void, Void, List<ChartWebservi
                 // draw the line chart
                 drawLineChart(usageEntities);
             } else {
-                ;
+
             }
         }
     };

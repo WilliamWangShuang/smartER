@@ -2,6 +2,7 @@ package smartEREntities.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 import smartER.DAL.Constant;
 import smartER.DAL.SmartERTools;
+import smartEREntities.DailySumInfo;
 import smartEREntities.Electricity;
 import smartEREntities.HourlyUsageInfo;
 import smartEREntities.PeakUsageHourInfo;
@@ -418,6 +420,63 @@ public class ElectricityFacadeREST extends AbstractFacade<Electricity> {
             throw ex;
         } 
         return result;
+    }
+    
+    @GET
+    @Path("findMonthlyUsage/{resid}/{month}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Object findMonthlyUsage(@PathParam("resid") Integer resid, @PathParam("month") int month) throws Exception {         
+        // Get usage list by resid and date 
+        List<Electricity> usageList = SmartERTools.getUsageByResidAndMonth(resid, month, em);
+        JsonArrayBuilder arraybuilder = Json.createArrayBuilder();
+        // domain list used for creating final jsonArray
+        List<DailySumInfo> domainList = new ArrayList<>();        
+        SimpleDateFormat f = new SimpleDateFormat(Constant.DATE_FORMAT);
+               
+        if (usageList.size() > 0){
+            String currDateStr = f.format(usageList.get(0).getUsagedate());
+            
+            DailySumInfo dailySumInfo = new DailySumInfo();
+            for (int i = 0; i < usageList.size(); i++) {
+                String currItemDateStr = f.format(usageList.get(i).getUsagedate());
+                // get usage and temperature info from db result
+                double currItemFridgeUsage = usageList.get(i).getFridgeusage().doubleValue();
+                double currItemACUsage = usageList.get(i).getAcusage().doubleValue();
+                double currItemWMUsage = usageList.get(i).getWmusage().doubleValue();
+                int currItemTemperature = usageList.get(i).getTemperature();
+                Date currItemDate = usageList.get(i).getUsagedate();
+                
+                // compare date, if same, sum usage, otherwise, add domain object into domain list
+                if (currItemDateStr.equals(currDateStr)) {
+                    dailySumInfo.setUsagedate(currItemDate);
+                    dailySumInfo.setTotalFridgeUsage(currItemFridgeUsage);
+                    dailySumInfo.setTotalACUsage(currItemACUsage);
+                    dailySumInfo.setTotalWMUsage(currItemWMUsage);
+                    dailySumInfo.setTemperature(currItemTemperature);
+                } else {
+                    domainList.add(dailySumInfo);
+                    currDateStr = currItemDateStr;
+                    // reset index and temp variable for next day's usage calculation
+                    dailySumInfo = new DailySumInfo();
+                    i--;
+                }
+            }
+            // for the last group of items
+            domainList.add(dailySumInfo);
+        }
+
+        // create final json array
+        for (DailySumInfo object : domainList) {
+            JsonObjectBuilder jObjectBuilder = Json.createObjectBuilder();
+            jObjectBuilder.add(Constant.JSON_KEY_RESID, Integer.toString(resid));
+            jObjectBuilder.add(Constant.JSON_KEY_USAGE, Double.toString(object.getTotalUsage()));
+            jObjectBuilder.add(Constant.JSON_KEY_TEMPERATURE, Integer.toString(object.getTemperature()));
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(object.getUsagedate());
+            jObjectBuilder.add(Constant.JSON_KEY_DATE, cal.get(Calendar.DAY_OF_MONTH));
+            arraybuilder.add(jObjectBuilder);
+        }
+        return arraybuilder.build();
     }
     
     @GET

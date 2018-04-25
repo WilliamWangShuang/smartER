@@ -34,7 +34,7 @@ public class LineChartFragment extends Fragment implements AdapterView.OnItemSel
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_HOURLY);
+        LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
         lineChartFactoiral.execute();
     }
 
@@ -48,9 +48,11 @@ public class LineChartFragment extends Fragment implements AdapterView.OnItemSel
             LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_HOURLY);
             lineChartFactoiral.execute();
         } else if(Constant.MAP_VIEW_DAILY.equals(viewType)) {
-
+            LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
+            lineChartFactoiral.execute();
         } else {
-
+            LineChartFactoiral lineChartFactoiral = new LineChartFactoiral(getActivity(), chart, Constant.MAP_VIEW_DAILY);
+            lineChartFactoiral.execute();
         }
         //mapFragmentFactorial.execute();
     }

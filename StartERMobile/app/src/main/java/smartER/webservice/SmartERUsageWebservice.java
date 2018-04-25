@@ -106,4 +106,26 @@ public class SmartERUsageWebservice {
 
         return result;
     }
+
+    // call RESTful web serice to get all monthly usage for one resident for a specific month, current year
+    public static List<JSONObject> getMonthlyUsageByResIdAndMonth(int resid, int month) throws IOException, JSONException {
+        List<JSONObject> result = new ArrayList<>();
+
+        // construct url
+        StringBuilder sBuilder = new StringBuilder(Constant.FIND_MONTHLY_USAGE_BY_RESID_MONTH);
+        sBuilder.append(resid).append("/").append(month);
+        // call ws to get query result
+        JSONArray jsonArray = webservice.requestWebServiceArray(sBuilder.toString());
+
+        // construct return result
+        // construct return list
+        int position = 0;
+        while (position < jsonArray.length()) {
+            JSONObject jsonObj = jsonArray.getJSONObject(position);
+            result.add(jsonObj);
+            position ++;
+        }
+
+        return result;
+    }
 }
