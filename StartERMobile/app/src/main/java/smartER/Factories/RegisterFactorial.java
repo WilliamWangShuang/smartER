@@ -13,11 +13,13 @@ import android.widget.Toast;
 import com.example.william.starter_mobile.MainActivity;
 import com.example.william.starter_mobile.R;
 import com.example.william.starter_mobile.SmartERMobileUtility;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapquest.android.commoncore.marshalling.StringMarshaller;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import smartER.webservice.MapWebservice;
 import smartER.webservice.SmartERUserWebservice;
 
 public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
@@ -31,6 +33,7 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
     private Activity activity;
     // domain entity
     private RegisterFactorial.RegisterInfoUI registerInfoUI;
+    private LatLng latLng;
     boolean isSucc;
 
     public RegisterFactorial(Activity activity, TextView tvUserName, TextView tvEmail, RegisterFactorial.RegisterInfoUI registerInfoUI) {
@@ -59,6 +62,7 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
             } else if (userWithSameEmail.length() == 0 && userWithSameUsername.length() == 0) {
                 // if no user found with same email or username, can create new user
                 isSucc = SmartERUserWebservice.saveRegisterResident(registerInfoUI);
+                latLng = MapWebservice.getLatLngByAddress(registerInfoUI.getAddress());
                 h.sendEmptyMessage(0);
             }
         } catch (Exception ex) {
@@ -85,6 +89,9 @@ public class RegisterFactorial  extends AsyncTask<Void, Void, Void> {
                         // set resident info to application level
                         SmartERMobileUtility.setAddress(registerInfoUI.getAddress());
                         SmartERMobileUtility.setFirstName(registerInfoUI.getFirstName());
+                        SmartERMobileUtility.setLatitude(latLng.getLatitude());
+                        SmartERMobileUtility.setLongtiude(latLng.getLongitude());
+                        SmartERMobileUtility.setPostcode(Integer.parseInt(registerInfoUI.getPostcode()));
                         // go to main activity
                         Intent intent = new Intent(activity, MainActivity.class);
                         activity.startActivityForResult(intent, 1);

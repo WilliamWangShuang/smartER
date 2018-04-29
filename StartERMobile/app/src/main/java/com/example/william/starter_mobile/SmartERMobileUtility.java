@@ -236,11 +236,11 @@ public class SmartERMobileUtility extends Application {
         JSONObject userProfileJsonObject = SmartERUserWebservice.findCurrentUserById();
 
         // get appliance usage from SQLite db
-        smartERDbUtility = new SmartERDbUtility(getmContext());
-        SmartERDbUtility.AppUsageEntity appUsageEntity = smartERDbUtility.getCurrentHourAppUsage(SmartERMobileUtility.getCurrentHour(), SmartERMobileUtility.getResId());
+        //smartERDbUtility = new SmartERDbUtility(getmContext());
+        //SmartERDbUtility.AppUsageEntity appUsageEntity = smartERDbUtility.getCurrentHourAppUsage(SmartERMobileUtility.getCurrentHour(), SmartERMobileUtility.getResId());
 
         // parse result Json object
-        if (appUsageEntity != null) {
+        /*if (appUsageEntity != null) {
             result.put(Constant.WS_KEY_AC_USAGE, appUsageEntity.getAcUsage());
             result.put(Constant.WS_KEY_FRIDGE_USAGE, appUsageEntity.getFirdgeUsage());
             result.put(Constant.WS_KEY_RESID, userProfileJsonObject);
@@ -249,7 +249,16 @@ public class SmartERMobileUtility extends Application {
             result.put(Constant.WS_KEY_USAGE_DATE, df.format(new Date()));
             result.put(Constant.WS_KEY_USAGE_HOUR, SmartERMobileUtility.getCurrentHour());
             result.put(Constant.WS_KEY_WM_USAGE, appUsageEntity.getWmUsage());
-        }
+        }*/
+
+        result.put(Constant.WS_KEY_AC_USAGE, 0.1);
+        result.put(Constant.WS_KEY_FRIDGE_USAGE, 0.7);
+        result.put(Constant.WS_KEY_RESID, userProfileJsonObject);
+        result.put(Constant.WS_KEY_TEMPERATURE, (int) SmartERMobileUtility.getCurrentTemp());
+        SimpleDateFormat df = new SimpleDateFormat(Constant.SERVER_DATE_FORMAT);
+        result.put(Constant.WS_KEY_USAGE_DATE, df.format(new Date()));
+        result.put(Constant.WS_KEY_USAGE_HOUR, SmartERMobileUtility.getCurrentHour());
+        result.put(Constant.WS_KEY_WM_USAGE, 0.22);
 
         return result;
     }
